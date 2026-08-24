@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
 import 'package:kissan_connect/features/auth/provider/auth_provider.dart';
+import 'package:kissan_connect/features/main_navigation_shell.dart';
 import 'package:kissan_connect/homePage.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
@@ -25,23 +27,29 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       return;
     }
 
-    final success = await context.read<AuthProvider>().verifyOtp(
-      otp: otp,
-      onError: (msg) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(msg)));
-      },
-    );
+    // final success = await context.read<AuthProvider>().verifyOtp(
+    //   otp: otp,
+    //   onError: (msg) {
+    //     ScaffoldMessenger.of(
+    //       context,
+    //     ).showSnackBar(SnackBar(content: Text(msg)));
+    //   },
+    // );
 
-    if (success && mounted) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const HomePage()),
-        // MaterialPageRoute(builder: (_) => const VehicleListScreen()),
-        (route) => false,
-      );
-    }
+    // if (success && mounted) {
+    //   Navigator.pushAndRemoveUntil(
+    //     context,
+    //     MaterialPageRoute(builder: (_) => const HomePage()),
+    //     // MaterialPageRoute(builder: (_) => const VehicleListScreen()),
+    //     (route) => false,
+    //   );
+    // }
+    Navigator.pushAndRemoveUntil(
+      context,
+      CupertinoPageRoute(builder: (_) => MainNavigationShell()),
+      // MaterialPageRoute(builder: (_) => const VehicleListScreen()),
+      (route) => false,
+    );
   }
 
   @override
@@ -84,20 +92,19 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           children: [
-            const SizedBox(height: 10),
-            // Header Security Shield Icon
+            const SizedBox(height: 50),
+
             Center(
               child: Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryLight.withOpacity(0.5),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.verified_user_rounded,
-                  size: 64,
-                  color: AppColors.primary,
+                height: 240,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                      'assets/images/otp_screen_backgroud_img.png',
+                    ),
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
             ),

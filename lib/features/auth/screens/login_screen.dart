@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/features/auth/provider/auth_provider.dart';
 import 'package:kissan_connect/features/auth/screens/otp_verification_screen.dart';
@@ -26,21 +27,28 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    context.read<AuthProvider>().sendOtp(
-      phoneNumber: phone,
-      onCodeSent: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => OtpVerificationScreen(phoneNumber: phone),
-          ),
-        );
-      },
-      onError: (msg) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(msg)));
-      },
+    // context.read<AuthProvider>().sendOtp(
+    //   phoneNumber: phone,
+    //   onCodeSent: () {
+    //     Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //         builder: (_) => OtpVerificationScreen(phoneNumber: phone),
+    //       ),
+    //     );
+    //   },
+    //   onError: (msg) {
+    //     ScaffoldMessenger.of(
+    //       context,
+    //     ).showSnackBar(SnackBar(content: Text(msg)));
+    //   },
+    // );
+
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (_) => OtpVerificationScreen(phoneNumber: phone),
+      ),
     );
   }
 
@@ -53,15 +61,14 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Top Illustration / Banner Area
+            SizedBox(height: 200),
             Container(
               height: 380,
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color(0xFFE8F5E9),
                 image: DecorationImage(
                   image: AssetImage(
-                    'assets/images/farmer_banner.png',
+                    'assets/images/login_backgroud_img.png',
                   ), // Add your asset banner
                   fit: BoxFit.cover,
                 ),
