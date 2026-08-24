@@ -57,7 +57,6 @@ class DefaultFirebaseOptions {
     projectId: 'kissan-connect-dcd06',
     storageBucket: 'kissan-connect-dcd06.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDTwfkGisB-I1zvXP7kAAUBlTB0nLgQHtw',
     appId: '1:590642798717:ios:febdcab2a0183955779114',
@@ -66,7 +65,6 @@ class DefaultFirebaseOptions {
     storageBucket: 'kissan-connect-dcd06.firebasestorage.app',
     iosBundleId: 'com.example.kissanConnect',
   );
-
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyDTwfkGisB-I1zvXP7kAAUBlTB0nLgQHtw',
     appId: '1:590642798717:ios:febdcab2a0183955779114',
