@@ -354,9 +354,12 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
 
   // Replace these with your local assets (e.g. 'assets/images/banner1.png') or network URLs
   final List<String> _bannerImages = [
-    'https://upload.wikimedia.org/wikipedia/commons/7/7e/PradhanMantriKisanSammanNidhi.jpg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail_unscaled&_=20221206105512',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEBVx8DuymVMg_aWray2g7tnAlmyayUK1QWL1eyXC7K0L8Mm4gCUCdqSxn&s=10',
-    'https://www.mahindratractor.com/sites/default/files/2026-01/blog-7-detail-page-blog-thumbnails.webp',
+    // 'https://upload.wikimedia.org/wikipedia/commons/7/7e/PradhanMantriKisanSammanNidhi.jpg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail_unscaled&_=20221206105512',
+    // 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEBVx8DuymVMg_aWray2g7tnAlmyayUK1QWL1eyXC7K0L8Mm4gCUCdqSxn&s=10',
+    // 'https://www.mahindratractor.com/sites/default/files/2026-01/blog-7-detail-page-blog-thumbnails.webp',
+    "assets/images/bharat_adv.png",
+    "assets/images/bharat_adv.png",
+    "assets/images/bharat_adv.png",
   ];
 
   @override
@@ -390,7 +393,7 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
     return Column(
       children: [
         SizedBox(
-          height: 165,
+          height: 185,
           child: PageView.builder(
             controller: _pageController,
             onPageChanged: (index) => setState(() => _currentPage = index),
@@ -400,22 +403,22 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
                 margin: const EdgeInsets.symmetric(horizontal: 2),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Image.network(
+                  child: Image.asset(
                     _bannerImages[index],
                     fit: BoxFit.cover,
                     width: double.infinity,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        color: Colors.grey.shade200,
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      );
-                    },
+                    // loadingBuilder: (context, child, loadingProgress) {
+                    //   if (loadingProgress == null) return child;
+                    //   return Container(
+                    //     color: Colors.grey.shade200,
+                    //     child: const Center(
+                    //       child: CircularProgressIndicator(
+                    //         strokeWidth: 2,
+                    //         color: AppColors.primary,
+                    //       ),
+                    //     ),
+                    //   );
+                    // },
                     errorBuilder: (context, error, stackTrace) => Container(
                       color: AppColors.primaryLight,
                       child: const Icon(
