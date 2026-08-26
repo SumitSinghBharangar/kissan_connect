@@ -1,0 +1,1 @@
+enum EquipmentCategory { tractor, harvester, plough, trailer, rotavator, sprayer, other }

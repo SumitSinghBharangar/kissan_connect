@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
 import 'package:kissan_connect/features/auth/provider/auth_provider.dart';
 import 'package:kissan_connect/features/auth/screens/login_screen.dart';
+import 'package:kissan_connect/features/rental/provider/equipment_provider.dart';
 import 'package:kissan_connect/firebase_options.dart';
 
 import 'package:provider/provider.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         // ChangeNotifierProvider(create: (_) => RentalProvider()),
+        ChangeNotifierProvider(create: (_) => EquipmentProvider()),
       ],
       child: MaterialApp(
         title: 'Kissan Connect',

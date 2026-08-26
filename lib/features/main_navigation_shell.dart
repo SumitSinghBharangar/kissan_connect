@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/features/home/screen/home_screen.dart';
+import 'package:kissan_connect/features/rental/screen/rental_vehicle_screen.dart';
 import 'package:kissan_connect/homePage.dart';
 import '../../core/constants/app_colors.dart';
 
@@ -17,7 +18,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
   // Connected navigation views matching your approved app layout
   final List<Widget> _views = [
     HomeScreen(), // Rent / Buy & Sell Marketplace
-    HomePage(), // Rent / Buy & Sell Marketplace
+    RentVehiclesScreen(), // Rent / Buy & Sell Marketplace
     HomePage(), // Rent / Buy & Sell Marketplace
     const SizedBox(),
     // Dummy slot for center FAB trigger
