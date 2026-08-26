@@ -6,42 +6,56 @@ class EquipmentProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   List<EquipmentModel> _allEquipments = [];
-  String _selectedCategory = 'All';
+  final Set<String> _selectedCategories = {'All'};
   String _searchQuery = '';
   bool _isLoading = false;
 
   bool get isLoading => _isLoading;
-  String get selectedCategory => _selectedCategory;
+  Set<String> get selectedCategories => _selectedCategories;
 
-  // Filtered getter based on active category chip and search query
+  // Multi-chip & Search Filter
   List<EquipmentModel> get equipments {
     return _allEquipments.where((item) {
-      final matchesCategory = _selectedCategory == 'All' ||
-          item.category.name.toLowerCase() == _selectedCategory.toLowerCase() ||
-          item.typeLabel.toLowerCase() == _selectedCategory.toLowerCase();
+      final matchesCategory =
+          _selectedCategories.contains('All') ||
+          _selectedCategories.any(
+            (cat) =>
+                cat.toLowerCase() == item.category.name.toLowerCase() ||
+                cat.toLowerCase() == item.typeLabel.toLowerCase(),
+          );
 
-      final matchesSearch = item.name
-              .toLowerCase()
-              .contains(_searchQuery.toLowerCase()) ||
+      final matchesSearch =
+          item.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           item.location.toLowerCase().contains(_searchQuery.toLowerCase());
 
       return matchesCategory && matchesSearch;
     }).toList();
   }
 
-  // Update selected category chip (All, Tractor, Harvester, etc.)
-  void setCategory(String category) {
-    _selectedCategory = category;
+  // Toggle Chip Selection Logic
+  void toggleCategory(String category) {
+    if (category == 'All') {
+      _selectedCategories.clear();
+      _selectedCategories.add('All');
+    } else {
+      _selectedCategories.remove('All');
+      if (_selectedCategories.contains(category)) {
+        _selectedCategories.remove(category);
+        if (_selectedCategories.isEmpty) {
+          _selectedCategories.add('All');
+        }
+      } else {
+        _selectedCategories.add(category);
+      }
+    }
     notifyListeners();
   }
 
-  // Update search query text
   void setSearchQuery(String query) {
     _searchQuery = query;
     notifyListeners();
   }
 
-  // Fetch all available equipment from Firestore collection 'equipments'
   Future<void> fetchEquipments() async {
     _isLoading = true;
     notifyListeners();
@@ -61,20 +75,5 @@ class EquipmentProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
-  }
-
-  // Real-time Stream alternative
-  Stream<List<EquipmentModel>> streamEquipments() {
-    return _firestore
-        .collection('equipments')
-        .where('isAvailable', isEqualTo: true)
-        .snapshots()
-        .map((snapshot) {
-      _allEquipments = snapshot.docs
-          .map((doc) => EquipmentModel.fromMap(doc.data(), docId: doc.id))
-          .toList();
-      notifyListeners();
-      return _allEquipments;
-    });
   }
 }

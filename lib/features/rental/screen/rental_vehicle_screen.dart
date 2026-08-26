@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kissan_connect/core/constants/app_colors.dart';
 import 'package:kissan_connect/features/rental/provider/equipment_provider.dart';
-import 'package:kissan_connect/features/rental/widgets/equipment_card.dart';
 import 'package:provider/provider.dart';
+import '../../../core/constants/app_colors.dart';
 
+import '../widgets/equipment_card.dart';
 
 class RentVehiclesScreen extends StatefulWidget {
   const RentVehiclesScreen({super.key});
@@ -13,7 +13,16 @@ class RentVehiclesScreen extends StatefulWidget {
 }
 
 class _RentVehiclesScreenState extends State<RentVehiclesScreen> {
-  final List<String> _categories = ['All', 'Tractor', 'Harvester', 'Plough', 'Trailer', 'Rotavator'];
+  // Category list using strongly-typed model and asset image paths
+  final List<FilterCategory> _categories = const [
+    FilterCategory(name: 'All', assetImage: 'assets/icons/all.png'),
+    FilterCategory(name: 'Tractor', assetImage: 'assets/icons/tractor.png'),
+    FilterCategory(name: 'Harvester', assetImage: 'assets/icons/harvester.png'),
+    FilterCategory(name: 'Plough', assetImage: 'assets/icons/plough.png'),
+    FilterCategory(name: 'Trailer', assetImage: 'assets/icons/trailer.png'),
+    FilterCategory(name: 'Rotavator', assetImage: 'assets/icons/rotavator.png'),
+  ];
+
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -33,16 +42,12 @@ class _RentVehiclesScreenState extends State<RentVehiclesScreen> {
     final equipmentProvider = context.watch<EquipmentProvider>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAF8),
-      // Green App Bar Header
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF388E3C),
+        backgroundColor: AppColors.primary,
         elevation: 0,
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-          onPressed: () => Navigator.maybePop(context),
-        ),
+
         title: const Text(
           'Rent Vehicles',
           style: TextStyle(
@@ -60,23 +65,40 @@ class _RentVehiclesScreenState extends State<RentVehiclesScreen> {
       ),
       body: Column(
         children: [
-          // Search Box Container
+          // Search Box Bar
           Container(
-            color: const Color(0xFF388E3C),
-            padding: const EdgeInsets.only(left: 18, right: 18, bottom: 16),
+            padding: const EdgeInsets.only(
+              left: 18,
+              right: 18,
+              bottom: 10,
+              top: 10,
+            ),
             child: Container(
               height: 48,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: TextField(
                 controller: _searchController,
                 onChanged: equipmentProvider.setSearchQuery,
                 decoration: InputDecoration(
                   hintText: 'Search vehicles or equipment...',
-                  hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
-                  prefixIcon: Icon(Icons.search_rounded, color: Colors.grey.shade400),
+                  hintStyle: TextStyle(
+                    color: Colors.grey.shade400,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.search_rounded,
+                    color: Colors.grey.shade400,
+                  ),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 ),
@@ -84,40 +106,102 @@ class _RentVehiclesScreenState extends State<RentVehiclesScreen> {
             ),
           ),
 
-          const SizedBox(height: 14),
+          const SizedBox(height: 5),
 
-          // Horizontal Category Filter Chips
+          // Horizontal Rounded-Edge Rectangle Asset Chips
           SizedBox(
-            height: 38,
+            height: 45,
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 18),
               scrollDirection: Axis.horizontal,
               itemCount: _categories.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              separatorBuilder: (_, __) => const SizedBox(width: 10),
               itemBuilder: (context, index) {
-                final category = _categories[index];
-                final isSelected = equipmentProvider.selectedCategory == category;
+                final categoryItem = _categories[index];
+                final bool isSelected = equipmentProvider.selectedCategories
+                    .contains(categoryItem.name);
 
                 return GestureDetector(
-                  onTap: () => equipmentProvider.setCategory(category),
+                  onTap: () =>
+                      equipmentProvider.toggleCategory(categoryItem.name),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: isSelected ? const Color(0xFF388E3C) : Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: isSelected ? const Color(0xFF388E3C) : Colors.grey.shade300,
-                        width: 1,
-                      ),
+                    curve: Curves.easeInOut,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 8,
                     ),
-                    child: Text(
-                      category,
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.grey.shade800,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                        fontSize: 13,
+                    decoration: BoxDecoration(
+                      gradient: isSelected
+                          ? const LinearGradient(
+                              colors: [Color(0xFF43A047), Color(0xFF2E7D32)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            )
+                          : null,
+                      color: isSelected ? null : Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isSelected
+                            ? const Color(0xFF2E7D32)
+                            : Colors.grey.shade300,
+                        width: 1.2,
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: isSelected
+                              ? const Color(0xFF2E7D32).withOpacity(0.25)
+                              : Colors.black.withOpacity(0.02),
+                          blurRadius: isSelected ? 8 : 4,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Category Asset Icon with Fallback
+                        Image.asset(
+                          categoryItem.assetImage,
+                          width: 22,
+                          height: 22,
+                          errorBuilder: (context, error, stackTrace) => Icon(
+                            Icons.agriculture_rounded,
+                            size: 20,
+                            color: isSelected
+                                ? Colors.white
+                                : Colors.grey.shade700,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          categoryItem.name,
+                          style: TextStyle(
+                            color: isSelected
+                                ? Colors.white
+                                : AppColors.textPrimary,
+                            fontWeight: isSelected
+                                ? FontWeight.w700
+                                : FontWeight.w500,
+                            fontSize: 13,
+                          ),
+                        ),
+                        if (isSelected && categoryItem.name != 'All') ...[
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: const BoxDecoration(
+                              color: Colors.white24,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.check,
+                              size: 12,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                 );
@@ -130,30 +214,46 @@ class _RentVehiclesScreenState extends State<RentVehiclesScreen> {
           // Equipment List Feed
           Expanded(
             child: equipmentProvider.isLoading
-                ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+                ? const Center(
+                    child: CircularProgressIndicator(color: AppColors.primary),
+                  )
                 : equipmentProvider.equipments.isEmpty
-                    ? Center(
-                        child: Text(
-                          'No vehicles available in this category.',
-                          style: TextStyle(color: Colors.grey.shade600),
-                        ),
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.only(left: 18, right: 18, bottom: 100),
-                        itemCount: equipmentProvider.equipments.length,
-                        itemBuilder: (context, index) {
-                          final item = equipmentProvider.equipments[index];
-                          return EquipmentCard(
-                            equipment: item,
-                            onTap: () {
-                              // Navigate to dynamic booking page
-                            },
-                          );
-                        },
+                ? Center(
+                    child: Text(
+                      'No vehicles found for selected filters.',
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 14,
                       ),
+                    ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.only(
+                      left: 18,
+                      right: 18,
+                      bottom: 100,
+                    ),
+                    itemCount: equipmentProvider.equipments.length,
+                    itemBuilder: (context, index) {
+                      final item = equipmentProvider.equipments[index];
+                      return EquipmentCard(
+                        equipment: item,
+                        onTap: () {
+                          // Detailed booking screen navigation
+                        },
+                      );
+                    },
+                  ),
           ),
         ],
       ),
     );
   }
+}
+
+class FilterCategory {
+  final String name;
+  final String assetImage;
+
+  const FilterCategory({required this.name, required this.assetImage});
 }
