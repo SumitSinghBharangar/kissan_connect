@@ -29,7 +29,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   EquipmentCategory _selectedCategory = EquipmentCategory.tractor;
   File? _pickedImage;
   String? _uploadedImageUrl;
-  bool _isUploadingImage = false;
+  bool _isUploadingImage = false; 
   bool _isSubmitting = false;
 
   final List<EquipmentCategory> _availableCategories = [
