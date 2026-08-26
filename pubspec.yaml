@@ -39,6 +39,8 @@ dependencies:
   pinput: ^6.0.2
   cloud_firestore: ^6.8.0
   firebase_auth: ^6.5.7
+  image_picker: ^1.2.3
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:

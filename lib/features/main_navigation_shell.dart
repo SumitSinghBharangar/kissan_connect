@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/features/home/screen/home_screen.dart';
+import 'package:kissan_connect/features/rental/screen/add_equipment_screen.dart';
 import 'package:kissan_connect/features/rental/screen/rental_vehicle_screen.dart';
 import 'package:kissan_connect/homePage.dart';
 import '../../core/constants/app_colors.dart';
@@ -346,18 +347,24 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
   }
 
   // --- CENTER PROMINENT ADD ACTION (+) ---
+  // --- CENTER PROMINENT ADD ACTION (+) ---
   Widget _buildCenterAddButton(BuildContext context) {
     return GestureDetector(
-      onTap: () => _openAddListingSheet(context),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const AddEquipmentScreen()),
+        );
+      },
       child: Container(
         height: 48,
         width: 48,
         decoration: BoxDecoration(
-          color: AppColors.primary,
+          color: const Color(0xFF2E7D32),
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withOpacity(0.35),
+              color: const Color(0xFF2E7D32).withOpacity(0.35),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
