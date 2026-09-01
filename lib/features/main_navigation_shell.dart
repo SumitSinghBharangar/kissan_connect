@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/features/home/screen/home_screen.dart';
+import 'package:kissan_connect/features/profile/screens/profile_screen.dart';
 import 'package:kissan_connect/features/rental/screen/add_equipment_screen.dart';
 import 'package:kissan_connect/features/rental/screen/rental_vehicle_screen.dart';
 import 'package:kissan_connect/homePage.dart';
@@ -20,12 +21,12 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
   // Connected navigation views matching your approved app layout
   final List<Widget> _views = [
     HomeScreen(), // Rent / Buy & Sell Marketplace
+
     RentVehiclesScreen(), // Rent / Buy & Sell Marketplace
-    HomePage(), // Rent / Buy & Sell Marketplace
     const SizedBox(),
 
     const Scaffold(body: Center(child: Text('Expert Advice & Community Chat'))),
-    const Scaffold(body: Center(child: Text('Farmer Profile Screen'))),
+    ProfileScreen(),
   ];
 
   void _openAddListingSheet(BuildContext context) {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
 import 'package:kissan_connect/features/auth/provider/auth_provider.dart';
 import 'package:kissan_connect/features/auth/screens/login_screen.dart';
+import 'package:kissan_connect/features/profile/provider/user_provider.dart';
 import 'package:kissan_connect/features/rental/provider/equipment_provider.dart';
 import 'package:kissan_connect/firebase_options.dart';
 
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         // ChangeNotifierProvider(create: (_) => RentalProvider()),
         ChangeNotifierProvider(create: (_) => EquipmentProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: MaterialApp(
         title: 'Kissan Connect',
@@ -59,3 +61,60 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+// class AuthGate extends StatelessWidget {
+//   const AuthGate({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return StreamBuilder<fb_auth.User?>(
+//       stream: fb_auth.FirebaseAuth.instance.authStateChanges(),
+//       builder: (context, snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return const Scaffold(
+//             body: Center(
+//               child: CircularProgressIndicator(color: AppColors.primary),
+//             ),
+//           );
+//         }
+
+//         if (snapshot.hasData && snapshot.data != null) {
+//           // Check Firestore user doc
+//           return FutureBuilder<DocumentSnapshot>(
+//             future: FirebaseFirestore.instance
+//                 .collection('users')
+//                 .doc(snapshot.data!.uid)
+//                 .get(),
+//             builder: (context, userDoc) {
+//               if (userDoc.connectionState == ConnectionState.waiting) {
+//                 return const Scaffold(
+//                   body: Center(
+//                     child: CircularProgressIndicator(color: AppColors.primary),
+//                   ),
+//                 );
+//               }
+
+//               // Preload user provider state
+//               context.read<UserProvider>().fetchUserProfile();
+
+//               if (userDoc.hasData && userDoc.data!.exists) {
+//                 final data = userDoc.data!.data() as Map<String, dynamic>?;
+//                 final isComplete = data?['isProfileComplete'] ?? false;
+
+//                 if (!isComplete) {
+//                   return const EditProfileScreen(isInitialSetup: true);
+//                 }
+//                 return const MainNavigationShell();
+//               }
+
+//               // First-time user profile setup
+//               return const EditProfileScreen(isInitialSetup: true);
+//             },
+//           );
+//         }
+
+//         return const LoginScreen();
+//       },
+//     );
+//   }
+// }

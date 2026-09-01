@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../../core/models/equipment_model.dart';
@@ -69,6 +71,8 @@ class EquipmentProvider extends ChangeNotifier {
       _allEquipments = snapshot.docs
           .map((doc) => EquipmentModel.fromMap(doc.data(), docId: doc.id))
           .toList();
+
+      log(_allEquipments.isEmpty.toString());
     } catch (e) {
       debugPrint('Error fetching equipments: $e');
     } finally {
