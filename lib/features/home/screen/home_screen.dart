@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
+import 'package:kissan_connect/features/rental/screen/rental_vehicle_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -120,36 +122,53 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildServicesGrid(BuildContext context) {
+    // Service definition mapped with destination routes
     final List<Map<String, dynamic>> services = [
       {
         'title': 'Rent Vehicles',
         'icon': Icons.agriculture_outlined,
         'color': const Color(0xFF4CAF50),
+        'screen': const RentVehiclesScreen(),
       },
       {
         'title': 'Buy & Sell',
         'icon': Icons.shopping_cart_outlined,
         'color': const Color(0xFF8BC34A),
+        'screen': const Scaffold(
+          body: Center(child: Text('Buy & Sell Crops Screen')),
+        ),
       },
       {
         'title': 'Weather',
         'icon': Icons.wb_sunny_outlined,
         'color': const Color(0xFF03A9F4),
+        'screen': const Scaffold(
+          body: Center(child: Text('Live Weather Forecast Screen')),
+        ),
       },
       {
         'title': 'Expert Advice',
         'icon': Icons.support_agent_outlined,
         'color': const Color(0xFF2E7D32),
+        'screen': const Scaffold(
+          body: Center(child: Text('Agri Expert Consultation Screen')),
+        ),
       },
       {
         'title': 'Schemes',
         'icon': Icons.assignment_outlined,
         'color': const Color(0xFF00897B),
+        'screen': const Scaffold(
+          body: Center(child: Text('Government Schemes Screen')),
+        ),
       },
       {
         'title': 'Crop Info',
         'icon': Icons.eco_outlined,
         'color': const Color(0xFF43A047),
+        'screen': const Scaffold(
+          body: Center(child: Text('Crop Knowledge Base Screen')),
+        ),
       },
     ];
 
@@ -172,7 +191,14 @@ class HomeScreen extends StatelessWidget {
           shadowColor: Colors.black.withOpacity(0.04),
           child: InkWell(
             borderRadius: BorderRadius.circular(16),
-            onTap: () {},
+            onTap: () {
+              if (item['screen'] != null) {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(builder: (_) => item['screen'] as Widget),
+                );
+              }
+            },
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
               child: Column(
