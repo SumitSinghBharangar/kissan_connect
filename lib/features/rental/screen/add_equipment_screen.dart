@@ -29,16 +29,31 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   EquipmentCategory _selectedCategory = EquipmentCategory.tractor;
   File? _pickedImage;
   String? _uploadedImageUrl;
-  bool _isUploadingImage = false; 
+  bool _isUploadingImage = false;
   bool _isSubmitting = false;
 
   final List<EquipmentCategory> _availableCategories = [
-    EquipmentCategory.tractor,
+    EquipmentCategory.cultivator,
+    EquipmentCategory.disc_harrow,
+    EquipmentCategory.disc_plough,
+    EquipmentCategory.fertilizer_spreader,
+    EquipmentCategory.grader,
     EquipmentCategory.harvester,
+    EquipmentCategory.land_leveller,
+    EquipmentCategory.laser_land_leveller,
+    EquipmentCategory.other,
+    EquipmentCategory.paddy_transplanter,
+    EquipmentCategory.potato_harvester,
+    EquipmentCategory.potato_seed_planter,
+    EquipmentCategory.reaper,
     EquipmentCategory.rotavator,
-    EquipmentCategory.plough,
-    EquipmentCategory.trailer,
+    EquipmentCategory.seed_drill,
     EquipmentCategory.sprayer,
+    EquipmentCategory.straw_reaper,
+    EquipmentCategory.thresher,
+    EquipmentCategory.tracter_sprayer,
+    EquipmentCategory.tractor,
+    EquipmentCategory.trolley,
   ];
 
   // Cloudinary Pick and Upload function

@@ -7,36 +7,143 @@ extension EquipmentCategoryExt on EquipmentCategory {
     switch (this) {
       case EquipmentCategory.tractor:
         return 'Tractor';
-      case EquipmentCategory.harvester:
-        return 'Harvester';
-      case EquipmentCategory.plough:
-        return 'Plough';
-      case EquipmentCategory.trailer:
-        return 'Trailer';
+
+      case EquipmentCategory.cultivator:
+        return 'Cultivator';
+
+      case EquipmentCategory.disc_plough:
+        return 'Disc Plough';
+
+      case EquipmentCategory.disc_harrow:
+        return 'Disc Harrow';
+
+      case EquipmentCategory.seed_drill:
+        return 'Seed Drill';
+
       case EquipmentCategory.rotavator:
         return 'Rotavator';
+
+      case EquipmentCategory.paddy_transplanter:
+        return 'Paddy Transplanter';
+
       case EquipmentCategory.sprayer:
         return 'Sprayer';
+
+      case EquipmentCategory.harvester:
+        return 'Harvester';
+
+      case EquipmentCategory.reaper:
+        return 'Reaper';
+
+      case EquipmentCategory.thresher:
+        return 'Thresher';
+
+      case EquipmentCategory.straw_reaper:
+        return 'Straw Reaper';
+
+      case EquipmentCategory.laser_land_leveller:
+        return 'Laser Land Leveller';
+
+      case EquipmentCategory.land_leveller:
+        return 'Land Leveller';
+
+      case EquipmentCategory.trolley:
+        return 'Trolley';
+
+      case EquipmentCategory.grader:
+        return 'Grader';
+
+      case EquipmentCategory.tracter_sprayer:
+        return 'Tractor Sprayer';
+
+      case EquipmentCategory.fertilizer_spreader:
+        return 'Fertilizer Spreader';
+
+      case EquipmentCategory.potato_harvester:
+        return 'Potato Harvester';
+
+      case EquipmentCategory.potato_seed_planter:
+        return 'Potato Seed Planter';
+
       case EquipmentCategory.other:
         return 'Other';
     }
   }
 
   static EquipmentCategory fromString(String category) {
-    switch (category.toLowerCase()) {
+    switch (category.toLowerCase().trim()) {
       case 'tractor':
         return EquipmentCategory.tractor;
-      case 'harvester':
-        return EquipmentCategory.harvester;
-      case 'plough':
-        return EquipmentCategory.plough;
-      case 'trailer':
-      case 'trolley':
-        return EquipmentCategory.trailer;
+
+      case 'cultivator':
+        return EquipmentCategory.cultivator;
+
+      case 'disc_plough':
+      case 'disc plough':
+        return EquipmentCategory.disc_plough;
+
+      case 'disc_harrow':
+      case 'disc harrow':
+        return EquipmentCategory.disc_harrow;
+
+      case 'seed_drill':
+      case 'seed drill':
+        return EquipmentCategory.seed_drill;
+
       case 'rotavator':
         return EquipmentCategory.rotavator;
+
+      case 'paddy_transplanter':
+      case 'paddy transplanter':
+        return EquipmentCategory.paddy_transplanter;
+
       case 'sprayer':
         return EquipmentCategory.sprayer;
+
+      case 'harvester':
+        return EquipmentCategory.harvester;
+
+      case 'reaper':
+        return EquipmentCategory.reaper;
+
+      case 'thresher':
+        return EquipmentCategory.thresher;
+
+      case 'straw_reaper':
+      case 'straw reaper':
+        return EquipmentCategory.straw_reaper;
+
+      case 'laser_land_leveller':
+      case 'laser land leveller':
+        return EquipmentCategory.laser_land_leveller;
+
+      case 'land_leveller':
+      case 'land leveller':
+        return EquipmentCategory.land_leveller;
+
+      case 'trolley':
+        return EquipmentCategory.trolley;
+
+      case 'grader':
+        return EquipmentCategory.grader;
+
+      case 'tracter_sprayer':
+      case 'tractor_sprayer':
+      case 'tractor sprayer':
+        return EquipmentCategory.tracter_sprayer;
+
+      case 'fertilizer_spreader':
+      case 'fertilizer spreader':
+        return EquipmentCategory.fertilizer_spreader;
+
+      case 'potato_harvester':
+      case 'potato harvester':
+        return EquipmentCategory.potato_harvester;
+
+      case 'potato_seed_planter':
+      case 'potato seed planter':
+        return EquipmentCategory.potato_seed_planter;
+
       default:
         return EquipmentCategory.other;
     }

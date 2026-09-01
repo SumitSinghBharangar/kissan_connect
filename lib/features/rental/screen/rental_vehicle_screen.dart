@@ -17,10 +17,61 @@ class _RentVehiclesScreenState extends State<RentVehiclesScreen> {
   final List<FilterCategory> _categories = const [
     FilterCategory(name: 'All', assetImage: 'assets/icons/all.png'),
     FilterCategory(name: 'Tractor', assetImage: 'assets/icons/tractor.png'),
-    FilterCategory(name: 'Harvester', assetImage: 'assets/icons/harvester.png'),
-    FilterCategory(name: 'Plough', assetImage: 'assets/icons/plough.png'),
-    FilterCategory(name: 'Trailer', assetImage: 'assets/icons/trailer.png'),
+    FilterCategory(
+      name: 'Cultivator',
+      assetImage: 'assets/icons/cultivator.png',
+    ),
+    FilterCategory(
+      name: 'Disc Plough',
+      assetImage: 'assets/icons/disc_plough.png',
+    ),
+    FilterCategory(
+      name: 'Disc Harrow',
+      assetImage: 'assets/icons/disc_harrow.png',
+    ),
+    FilterCategory(
+      name: 'Seed Drill',
+      assetImage: 'assets/icons/seed_drill.png',
+    ),
     FilterCategory(name: 'Rotavator', assetImage: 'assets/icons/rotavator.png'),
+    FilterCategory(
+      name: 'Paddy Transplanter',
+      assetImage: 'assets/icons/paddy_transplanter.png',
+    ),
+    FilterCategory(name: 'Sprayer', assetImage: 'assets/icons/sprayer.png'),
+    FilterCategory(name: 'Harvester', assetImage: 'assets/icons/harvester.png'),
+    FilterCategory(name: 'Reaper', assetImage: 'assets/icons/reaper.png'),
+    FilterCategory(name: 'Thresher', assetImage: 'assets/icons/thresher.png'),
+    FilterCategory(
+      name: 'Straw Reaper',
+      assetImage: 'assets/icons/straw_reaper.png',
+    ),
+    FilterCategory(
+      name: 'Laser Land Leveller',
+      assetImage: 'assets/icons/laser_land_leveller.png',
+    ),
+    FilterCategory(
+      name: 'Land Leveller',
+      assetImage: 'assets/icons/land_leveller.png',
+    ),
+    FilterCategory(name: 'Trolley', assetImage: 'assets/icons/trolley.png'),
+    FilterCategory(name: 'Grader', assetImage: 'assets/icons/grader.png'),
+    FilterCategory(
+      name: 'Tracter Sprayer',
+      assetImage: 'assets/icons/tracter_sprayer.png',
+    ),
+    FilterCategory(
+      name: 'Fertilizer Spreader',
+      assetImage: 'assets/icons/fertilizer_spreader.png',
+    ),
+    FilterCategory(
+      name: 'Potato Harvester',
+      assetImage: 'assets/icons/potato_harvester.png',
+    ),
+    FilterCategory(
+      name: 'Potato Seed Planter',
+      assetImage: 'assets/icons/potato_seed_planter.png',
+    ),
   ];
 
   final TextEditingController _searchController = TextEditingController();
@@ -37,6 +88,11 @@ class _RentVehiclesScreenState extends State<RentVehiclesScreen> {
     super.dispose();
   }
 
+  // Pull-to-refresh handler
+  Future<void> _handleRefresh() async {
+    await context.read<EquipmentProvider>().fetchEquipments();
+  }
+
   @override
   Widget build(BuildContext context) {
     final equipmentProvider = context.watch<EquipmentProvider>();
@@ -47,7 +103,6 @@ class _RentVehiclesScreenState extends State<RentVehiclesScreen> {
         backgroundColor: AppColors.primary,
         elevation: 0,
         centerTitle: true,
-
         title: const Text(
           'Rent Vehicles',
           style: TextStyle(
@@ -211,38 +266,53 @@ class _RentVehiclesScreenState extends State<RentVehiclesScreen> {
 
           const SizedBox(height: 14),
 
-          // Equipment List Feed
+          // Equipment List Feed wrapped in RefreshIndicator
           Expanded(
             child: equipmentProvider.isLoading
                 ? const Center(
                     child: CircularProgressIndicator(color: AppColors.primary),
                   )
-                : equipmentProvider.equipments.isEmpty
-                ? Center(
-                    child: Text(
-                      'No vehicles found for selected filters.',
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 14,
-                      ),
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.only(
-                      left: 18,
-                      right: 18,
-                      bottom: 100,
-                    ),
-                    itemCount: equipmentProvider.equipments.length,
-                    itemBuilder: (context, index) {
-                      final item = equipmentProvider.equipments[index];
-                      return EquipmentCard(
-                        equipment: item,
-                        onTap: () {
-                          // Detailed booking screen navigation
-                        },
-                      );
-                    },
+                : RefreshIndicator(
+                    onRefresh: _handleRefresh,
+                    color: AppColors.primary,
+                    child: equipmentProvider.equipments.isEmpty
+                        ? ListView(
+                            // AlwaysScrollableScrollPhysics ensures the empty list can still be pulled down
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            children: [
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.5,
+                                child: Center(
+                                  child: Text(
+                                    'No vehicles found for selected filters.',
+                                    style: TextStyle(
+                                      color: Colors.grey.shade600,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : ListView.builder(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            padding: const EdgeInsets.only(
+                              left: 18,
+                              right: 18,
+                              bottom: 100,
+                            ),
+                            itemCount: equipmentProvider.equipments.length,
+                            itemBuilder: (context, index) {
+                              final item = equipmentProvider.equipments[index];
+                              return EquipmentCard(
+                                equipment: item,
+                                onTap: () {
+                                  // Detailed booking screen navigation
+                                },
+                              );
+                            },
+                          ),
                   ),
           ),
         ],
