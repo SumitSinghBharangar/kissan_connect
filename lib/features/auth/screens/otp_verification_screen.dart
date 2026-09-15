@@ -4,11 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
 import 'package:kissan_connect/features/auth/provider/auth_provider.dart';
-import 'package:kissan_connect/features/auth/screens/login_screen.dart';
 import 'package:kissan_connect/features/main_navigation_shell.dart';
 import 'package:kissan_connect/features/profile/provider/user_provider.dart';
 import 'package:kissan_connect/features/profile/screens/edit_profile_screen.dart';
-import 'package:kissan_connect/homePage.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 
@@ -32,29 +30,47 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       return;
     }
 
-    // final success = await context.read<AuthProvider>().verifyOtp(
-    //   otp: otp,
-    //   onError: (msg) {
-    //     ScaffoldMessenger.of(
-    //       context,
-    //     ).showSnackBar(SnackBar(content: Text(msg)));
-    //   },
-    // );
-
-    // if (success && mounted) {
-    //   Navigator.pushAndRemoveUntil(
-    //     context,
-    //     MaterialPageRoute(builder: (_) => const HomePage()),
-    //     // MaterialPageRoute(builder: (_) => const VehicleListScreen()),
-    //     (route) => false,
-    //   );
-    // }
-    Navigator.pushAndRemoveUntil(
-      context,
-      CupertinoPageRoute(builder: (_) => AuthGate()),
-      // MaterialPageRoute(builder: (_) => const VehicleListScreen()),
-      (route) => false,
+    final success = await context.read<AuthProvider>().verifyOtp(
+      otp: otp,
+      onError: (msg) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(msg)));
+      },
     );
+
+    if (success && mounted) {
+      final user = fb_auth.FirebaseAuth.instance.currentUser;
+      bool isComplete = false;
+      if (user != null) {
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (userDoc.exists && userDoc.data() != null) {
+          final data = userDoc.data() as Map<String, dynamic>;
+          isComplete = data['isProfileComplete'] as bool? ?? false;
+        }
+
+        // Sync state to UserProvider
+        if (mounted) {
+          await context.read<UserProvider>().fetchUserProfile();
+        }
+      }
+
+      if (!mounted) return;
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        CupertinoPageRoute(
+          builder: (_) => isComplete
+              ? const MainNavigationShell()
+              : const EditProfileScreen(isInitialSetup: true),
+        ),
+        (route) => false,
+      );
+    }
   }
 
   @override
@@ -248,63 +264,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class AuthGate extends StatelessWidget {
-  const AuthGate({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<fb_auth.User?>(
-      stream: fb_auth.FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            ),
-          );
-        }
-
-        if (snapshot.hasData && snapshot.data != null) {
-          // Check Firestore user doc
-          return FutureBuilder<DocumentSnapshot>(
-            future: FirebaseFirestore.instance
-                .collection('users')
-                .doc(snapshot.data!.uid)
-                .get(),
-            builder: (context, userDoc) {
-              if (userDoc.connectionState == ConnectionState.waiting) {
-                return const Scaffold(
-                  body: Center(
-                    child: CircularProgressIndicator(color: AppColors.primary),
-                  ),
-                );
-              }
-
-              // Preload user provider state
-              context.read<UserProvider>().fetchUserProfile();
-
-              if (userDoc.hasData && userDoc.data!.exists) {
-                final data = userDoc.data!.data() as Map<String, dynamic>?;
-                final isComplete = data?['isProfileComplete'] ?? false;
-
-                if (!isComplete) {
-                  return const EditProfileScreen(isInitialSetup: true);
-                }
-                return const MainNavigationShell();
-              }
-
-              // First-time user profile setup
-              return const EditProfileScreen(isInitialSetup: true);
-            },
-          );
-        }
-
-        return const LoginScreen();
-      },
     );
   }
 }

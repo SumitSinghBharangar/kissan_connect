@@ -2,7 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
 import 'package:kissan_connect/features/auth/provider/auth_provider.dart';
+import 'package:kissan_connect/features/auth/screens/auth_gate.dart';
 import 'package:kissan_connect/features/auth/screens/login_screen.dart';
+import 'package:kissan_connect/features/auth/screens/otp_verification_screen.dart';
 import 'package:kissan_connect/features/profile/provider/user_provider.dart';
 import 'package:kissan_connect/features/rental/provider/equipment_provider.dart';
 import 'package:kissan_connect/firebase_options.dart';
@@ -56,9 +58,8 @@ class MyApp extends StatelessWidget {
         ),
         // Auth Wrapper: automatically check if user is already logged in
         // home: const Scaffold(body: Center(child: Text("Kissan Connect"))),
-        home: const LoginScreen(),
+        home: AuthGate(),
       ),
     );
   }
 }
-

@@ -27,29 +27,29 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    // context.read<AuthProvider>().sendOtp(
-    //   phoneNumber: phone,
-    //   onCodeSent: () {
-    //     Navigator.push(
-    //       context,
-    //       MaterialPageRoute(
-    //         builder: (_) => OtpVerificationScreen(phoneNumber: phone),
-    //       ),
-    //     );
-    //   },
-    //   onError: (msg) {
-    //     ScaffoldMessenger.of(
-    //       context,
-    //     ).showSnackBar(SnackBar(content: Text(msg)));
-    //   },
-    // );
-
-    Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (_) => OtpVerificationScreen(phoneNumber: phone),
-      ),
+    context.read<AuthProvider>().sendOtp(
+      phoneNumber: phone,
+      onCodeSent: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => OtpVerificationScreen(phoneNumber: phone),
+          ),
+        );
+      },
+      onError: (msg) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(msg)));
+      },
     );
+
+    // Navigator.push(
+    //   context,
+    //   CupertinoPageRoute(
+    //     builder: (_) => OtpVerificationScreen(phoneNumber: phone),
+    //   ),
+    // );
   }
 
   @override
