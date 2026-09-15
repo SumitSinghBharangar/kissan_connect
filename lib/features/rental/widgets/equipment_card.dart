@@ -37,21 +37,24 @@ class EquipmentCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Vehicle / Machinery Thumbnail
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.network(
-                  equipment.imageUrl,
-                  width: 120,
-                  height: 95,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    width: 120,
-                    height: 95,
-                    color: AppColors.primaryLight,
-                    child: const Icon(
-                      Icons.agriculture_rounded,
-                      size: 42,
-                      color: AppColors.primary,
+              Hero(
+                tag: 'equipment_image_${equipment.id}',
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    equipment.imageUrl,
+                    width: 110,
+                    height: 100,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      width: 110,
+                      height: 100,
+                      color: AppColors.primaryLight,
+                      child: const Icon(
+                        Icons.agriculture_rounded,
+                        size: 42,
+                        color: AppColors.primary,
+                      ),
                     ),
                   ),
                 ),

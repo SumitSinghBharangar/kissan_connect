@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/features/rental/provider/equipment_provider.dart';
+import 'package:kissan_connect/features/rental/screen/equipment_detail_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 
@@ -308,7 +310,14 @@ class _RentVehiclesScreenState extends State<RentVehiclesScreen> {
                               return EquipmentCard(
                                 equipment: item,
                                 onTap: () {
-                                  // Detailed booking screen navigation
+                                  Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                      builder: (_) => EquipmentDetailScreen(
+                                        equipment: item,
+                                      ),
+                                    ),
+                                  );
                                 },
                               );
                             },
