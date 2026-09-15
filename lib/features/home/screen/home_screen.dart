@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
+import 'package:kissan_connect/features/profile/provider/user_provider.dart';
 import 'package:kissan_connect/features/rental/screen/rental_vehicle_screen.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -22,7 +24,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(),
+              _buildHeader(context),
               const SizedBox(height: 16),
 
               // Hero Banner Image Carousel Slider
@@ -61,48 +63,79 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
+    final user = context.watch<UserProvider>().currentUser;
+
+    // Format greeting name (falls back to "Farmer" if empty)
+    final String displayName = (user != null && user.name.trim().isNotEmpty)
+        ? user.name.trim()
+        : 'Farmer';
+
+    // Format location string: village, district, state
+    String locationText = 'Location not set';
+    if (user != null) {
+      final locationParts = [
+        user.village,
+        user.district,
+        user.state,
+      ].where((s) => s.trim().isNotEmpty).toList();
+      if (locationParts.isNotEmpty) {
+        locationText = locationParts.join(', ');
+      }
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Row(
-              children: [
-                Text(
-                  'Hello, Farmer',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      'Hello, $displayName',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.textPrimary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-                SizedBox(width: 4),
-                Text('👋', style: TextStyle(fontSize: 18)),
-              ],
-            ),
-            const SizedBox(height: 3),
-            Row(
-              children: [
-                const Icon(
-                  Icons.location_on,
-                  size: 14,
-                  color: AppColors.primary,
-                ),
-                const SizedBox(width: 3),
-                Text(
-                  'Mathura, Uttar Pradesh',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey.shade700,
-                    fontWeight: FontWeight.w500,
+                  const SizedBox(width: 4),
+                  const Text('👋', style: TextStyle(fontSize: 18)),
+                ],
+              ),
+              const SizedBox(height: 3),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.location_on,
+                    size: 14,
+                    color: AppColors.primary,
                   ),
-                ),
-              ],
-            ),
-          ],
+                  const SizedBox(width: 3),
+                  Expanded(
+                    child: Text(
+                      locationText,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey.shade700,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
+        const SizedBox(width: 12),
         Container(
           decoration: BoxDecoration(
             color: Colors.white,

@@ -63,6 +63,8 @@ class UserProvider extends ChangeNotifier {
         'updatedAt': FieldValue.serverTimestamp(),
       };
 
+      await user.updateDisplayName(name);
+
       await _firestore
           .collection('users')
           .doc(user.uid)
