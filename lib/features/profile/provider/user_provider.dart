@@ -13,6 +13,35 @@ class UserProvider extends ChangeNotifier {
   UserModel? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
 
+  Future<void> toggleFavorite(String equipmentId) async {
+    final user = _auth.currentUser;
+    if (user == null || _currentUser == null) return;
+
+    final isFav = _currentUser!.favoriteEquipmentIds.contains(equipmentId);
+    final updatedFavorites = List<String>.from(
+      _currentUser!.favoriteEquipmentIds,
+    );
+
+    if (isFav) {
+      updatedFavorites.remove(equipmentId);
+    } else {
+      updatedFavorites.add(equipmentId);
+    }
+
+    _currentUser!.favoriteEquipmentIds = updatedFavorites;
+    notifyListeners();
+
+    try {
+      await _firestore.collection('users').doc(user.uid).update({
+        'favoriteEquipmentIds': isFav
+            ? FieldValue.arrayRemove([equipmentId])
+            : FieldValue.arrayUnion([equipmentId]),
+      });
+    } catch (e) {
+      debugPrint('Error updating favorite: $e');
+    }
+  }
+
   // Fetch or listen to user document
   Future<void> fetchUserProfile() async {
     final user = _auth.currentUser;

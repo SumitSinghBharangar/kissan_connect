@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
 import 'package:kissan_connect/core/models/booking_model.dart';
+import 'package:kissan_connect/core/utils/contact_helper.dart';
 
 class MyBookingsScreen extends StatelessWidget {
   const MyBookingsScreen({super.key});
@@ -352,7 +353,20 @@ class _BookingCard extends StatelessWidget {
                   ),
                 ] else ...[
                   TextButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      final contactNumber = isOwnerView
+                          ? booking.renterPhone
+                          : '';
+                      if (contactNumber.isNotEmpty) {
+                        ContactHelper.makePhoneCall(context, contactNumber);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Phone number not available'),
+                          ),
+                        );
+                      }
+                    },
                     icon: const Icon(
                       Icons.call_outlined,
                       size: 16,
