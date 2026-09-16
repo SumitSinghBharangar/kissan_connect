@@ -6,6 +6,7 @@ import 'package:kissan_connect/features/profile/provider/user_provider.dart';
 import 'package:kissan_connect/features/profile/screens/edit_profile_screen.dart';
 import 'package:kissan_connect/features/rental/screen/my_bookings_screen.dart';
 import 'package:kissan_connect/features/rental/screen/my_equipment_screen.dart';
+import 'package:kissan_connect/features/rental/screen/saved_equipments_screen.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -179,7 +180,14 @@ class ProfileScreen extends StatelessWidget {
                 icon: Icons.favorite_border_rounded,
                 title: 'Saved & Favorites',
                 subtitle: 'Bookmarked machinery and tools',
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const SavedEquipmentsScreen(),
+                    ),
+                  );
+                },
               ),
             ]),
 
