@@ -20,4 +20,5 @@ enum EquipmentCategory {
   potato_harvester,
   potato_seed_planter,
   other,
+  
 }

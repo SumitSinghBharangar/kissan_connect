@@ -63,7 +63,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget  _buildHeader(BuildContext context) {
     final user = context.watch<UserProvider>().currentUser;
 
     // Format greeting name (falls back to "Farmer" if empty)
@@ -147,7 +147,9 @@ class HomeScreen extends StatelessWidget {
               Icons.notifications_none_rounded,
               color: AppColors.textPrimary,
             ),
-            onPressed: () {},
+            onPressed: () {
+              
+            },
           ),
         ),
       ],
