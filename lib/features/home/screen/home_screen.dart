@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
+import 'package:kissan_connect/features/mandi/screens/mandi_screen.dart';
 import 'package:kissan_connect/features/profile/provider/user_provider.dart';
 import 'package:kissan_connect/features/rental/screen/rental_vehicle_screen.dart';
 import 'package:provider/provider.dart';
@@ -63,7 +64,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget  _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context) {
     final user = context.watch<UserProvider>().currentUser;
 
     // Format greeting name (falls back to "Farmer" if empty)
@@ -147,9 +148,7 @@ class HomeScreen extends StatelessWidget {
               Icons.notifications_none_rounded,
               color: AppColors.textPrimary,
             ),
-            onPressed: () {
-              
-            },
+            onPressed: () {},
           ),
         ),
       ],
@@ -169,9 +168,7 @@ class HomeScreen extends StatelessWidget {
         'title': 'Buy & Sell',
         'icon': Icons.shopping_cart_outlined,
         'color': const Color(0xFF8BC34A),
-        'screen': const Scaffold(
-          body: Center(child: Text('Buy & Sell Crops Screen')),
-        ),
+        'screen': MandiScreen(),
       },
       {
         'title': 'Weather',

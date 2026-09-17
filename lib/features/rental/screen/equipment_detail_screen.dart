@@ -227,8 +227,8 @@ class EquipmentDetailScreen extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 100), // Spacing for floating footer
-                ],
+                  const SizedBox(height: 100), 
+                ],  
               ),
             ),
           ),
