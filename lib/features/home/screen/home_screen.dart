@@ -5,6 +5,7 @@ import 'package:kissan_connect/core/constants/app_colors.dart';
 import 'package:kissan_connect/features/mandi/screens/mandi_screen.dart';
 import 'package:kissan_connect/features/profile/provider/user_provider.dart';
 import 'package:kissan_connect/features/rental/screen/rental_vehicle_screen.dart';
+import 'package:kissan_connect/features/weather/screen/weather_screen.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -28,7 +29,7 @@ class HomeScreen extends StatelessWidget {
               _buildHeader(context),
               const SizedBox(height: 16),
 
-              // Hero Banner Image Carousel Slider
+              
               const HeroBannerCarousel(),
               const SizedBox(height: 22),
 
@@ -174,9 +175,7 @@ class HomeScreen extends StatelessWidget {
         'title': 'Weather',
         'icon': Icons.wb_sunny_outlined,
         'color': const Color(0xFF03A9F4),
-        'screen': const Scaffold(
-          body: Center(child: Text('Live Weather Forecast Screen')),
-        ),
+        'screen': WeatherScreen(),
       },
       {
         'title': 'Expert Advice',
