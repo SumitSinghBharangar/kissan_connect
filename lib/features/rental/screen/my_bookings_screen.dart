@@ -168,6 +168,110 @@ class _BookingCard extends StatelessWidget {
     }
   }
 
+  Future<void> _handleContact(BuildContext context) async {
+    String targetPhone = isOwnerView ? booking.renterPhone : booking.ownerPhone;
+    String targetName = isOwnerView ? booking.renterName : booking.ownerName;
+
+    // Fallback for older booking docs without ownerPhone
+    if (targetPhone.isEmpty) {
+      final targetUid = isOwnerView ? booking.renterId : booking.ownerId;
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(targetUid)
+          .get();
+      if (doc.exists && doc.data() != null) {
+        targetPhone = doc.data()!['phone'] ?? '';
+        targetName = doc.data()!['name'] ?? targetName;
+      }
+    }
+
+    if (targetPhone.isEmpty) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Contact number is not available for this user'),
+          ),
+        );
+      }
+      return;
+    }
+
+    if (!context.mounted) return;
+
+    // Bottom sheet with direct Call and WhatsApp actions
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Contact $targetName',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(targetPhone, style: TextStyle(color: Colors.grey.shade600)),
+              const SizedBox(height: 16),
+              ListTile(
+                leading: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2E7D32).withOpacity(0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.call, color: Color(0xFF2E7D32)),
+                ),
+                title: const Text(
+                  'Direct Phone Call',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  ContactHelper.makePhoneCall(context, targetPhone);
+                },
+              ),
+              ListTile(
+                leading: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF25D366).withOpacity(0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.chat_bubble_outline,
+                    color: Color(0xFF25D366),
+                  ),
+                ),
+                title: const Text(
+                  'Message on WhatsApp',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  ContactHelper.openWhatsApp(
+                    context,
+                    targetPhone,
+                    message:
+                        'Hello $targetName, regarding booking for ${booking.equipmentName} on Kissan Connect...',
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _updateStatus(
     BuildContext context,
     String docId,
@@ -353,20 +457,7 @@ class _BookingCard extends StatelessWidget {
                   ),
                 ] else ...[
                   TextButton.icon(
-                    onPressed: () {
-                      final contactNumber = isOwnerView
-                          ? booking.renterPhone
-                          : '';
-                      if (contactNumber.isNotEmpty) {
-                        ContactHelper.makePhoneCall(context, contactNumber);
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Phone number not available'),
-                          ),
-                        );
-                      }
-                    },
+                    onPressed: () => _handleContact(context),
                     icon: const Icon(
                       Icons.call_outlined,
                       size: 16,

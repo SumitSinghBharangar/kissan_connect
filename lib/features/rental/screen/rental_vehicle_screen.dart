@@ -312,7 +312,7 @@ class _RentVehiclesScreenState extends State<RentVehiclesScreen> {
                                 onTap: () {
                                   Navigator.push(
                                     context,
-                                    CupertinoPageRoute(
+                                    MaterialPageRoute(
                                       builder: (_) => EquipmentDetailScreen(
                                         equipment: item,
                                       ),

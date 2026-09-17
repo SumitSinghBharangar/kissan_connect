@@ -42,6 +42,8 @@ class BookingModel {
   final String equipmentImageUrl;
   final String ownerId;
   final String renterId;
+  final String ownerName;
+  final String ownerPhone;
   final String renterName;
   final String renterPhone;
   final DateTime bookingDate;
@@ -58,9 +60,12 @@ class BookingModel {
     required this.equipmentName,
     required this.equipmentImageUrl,
     required this.ownerId,
+
     required this.renterId,
     required this.renterName,
     required this.renterPhone,
+    required this.ownerName,
+    required this.ownerPhone,
     required this.bookingDate,
     required this.totalHours,
     required this.ratePerHour,
@@ -78,6 +83,8 @@ class BookingModel {
       'equipmentImageUrl': equipmentImageUrl,
       'ownerId': ownerId,
       'renterId': renterId,
+      'ownerName': ownerName,
+      'ownerPhone': ownerPhone,
       'renterName': renterName,
       'renterPhone': renterPhone,
       'bookingDate': Timestamp.fromDate(bookingDate),
@@ -97,6 +104,8 @@ class BookingModel {
       equipmentName: map['equipmentName'] as String? ?? '',
       equipmentImageUrl: map['equipmentImageUrl'] as String? ?? '',
       ownerId: map['ownerId'] as String? ?? '',
+      ownerName: map['ownerName'] as String? ?? '',
+      ownerPhone: map['ownerPhone'] as String? ?? '',
       renterId: map['renterId'] as String? ?? '',
       renterName: map['renterName'] as String? ?? '',
       renterPhone: map['renterPhone'] as String? ?? '',
@@ -106,7 +115,9 @@ class BookingModel {
       totalHours: map['totalHours'] as int? ?? 1,
       ratePerHour: map['ratePerHour'] as num? ?? 0,
       totalAmount: map['totalAmount'] as num? ?? 0,
-      status: BookingStatusExt.fromString(map['status'] as String? ?? 'pending'),
+      status: BookingStatusExt.fromString(
+        map['status'] as String? ?? 'pending',
+      ),
       deliveryNotes: map['deliveryNotes'] as String?,
       createdAt: map['createdAt'] != null
           ? (map['createdAt'] as Timestamp).toDate()

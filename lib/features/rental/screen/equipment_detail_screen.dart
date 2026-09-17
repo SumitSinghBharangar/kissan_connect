@@ -478,6 +478,20 @@ class _BookingModalSheetState extends State<BookingModalSheet> {
     setState(() => _isBooking = true);
 
     try {
+      final ownerDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.equipment.ownerId)
+          .get();
+
+      String ownerName = 'Equipment Owner';
+      String ownerPhone = '';
+
+      if (ownerDoc.exists && ownerDoc.data() != null) {
+        final data = ownerDoc.data()!;
+        ownerName = data['name'] ?? ownerName;
+        ownerPhone = data['phone'] ?? '';
+      }
+
       final docRef = FirebaseFirestore.instance.collection('bookings').doc();
 
       final booking = BookingModel(
@@ -486,6 +500,8 @@ class _BookingModalSheetState extends State<BookingModalSheet> {
         equipmentName: widget.equipment.name,
         equipmentImageUrl: widget.equipment.imageUrl,
         ownerId: widget.equipment.ownerId,
+        ownerName: ownerName,
+        ownerPhone: ownerPhone,
         renterId: user.uid,
         renterName: currentUserData?.name ?? 'Farmer User',
         renterPhone: user.phoneNumber ?? (currentUserData?.phone ?? ''),
