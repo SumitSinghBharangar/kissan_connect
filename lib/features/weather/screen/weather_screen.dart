@@ -20,8 +20,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
   void initState() {
     super.initState();
     final user = context.read<UserProvider>().currentUser;
-    if (user != null && user.district.isNotEmpty) {
-      _currentLocation = user.district;
+    if (user != null && user.district.trim().isNotEmpty) {
+      _currentLocation = user.district.trim();
+    } else {
+      _currentLocation = "Mathura";
     }
     _weatherFuture = WeatherService.fetchRealWeather(_currentLocation);
   }
