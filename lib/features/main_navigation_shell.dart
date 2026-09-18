@@ -1,11 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:kissan_connect/features/chat/screen/chat_list_screen.dart';
 import 'package:kissan_connect/features/home/screen/home_screen.dart';
 import 'package:kissan_connect/features/profile/screens/profile_screen.dart';
 import 'package:kissan_connect/features/rental/screen/add_equipment_screen.dart';
 import 'package:kissan_connect/features/rental/screen/rental_vehicle_screen.dart';
-import 'package:kissan_connect/homePage.dart';
+
 import '../../core/constants/app_colors.dart';
 
 class MainNavigationShell extends StatefulWidget {
@@ -18,207 +19,16 @@ class MainNavigationShell extends StatefulWidget {
 class _MainNavigationShellState extends State<MainNavigationShell> {
   int _currentIndex = 0;
 
-  // Connected navigation views matching your approved app layout
+ 
   final List<Widget> _views = [
     HomeScreen(), // Rent / Buy & Sell Marketplace
 
-    RentVehiclesScreen(), // Rent / Buy & Sell Marketplace
+    RentVehiclesScreen(),
     const SizedBox(),
 
-    const Scaffold(body: Center(child: Text('Expert Advice & Community Chat'))),
+    ChatListScreen(),
     ProfileScreen(),
   ];
-
-  void _openAddListingSheet(BuildContext context) {
-    showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text(
-          'Create New Listing',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        message: const Text(
-          'Select the type of listing or request you want to create',
-          style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
-        ),
-        actions: <CupertinoActionSheetAction>[
-          // 1. Vehicle / Equipment Rental Option
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              // Navigate to Add Vehicle Screen
-            },
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryLight,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    CupertinoIcons.car_detailed,
-                    color: AppColors.primary,
-                    size: 22,
-                  ),
-                ),
-                const SizedBox(width: 14),
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'List Vehicle for Rent',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      SizedBox(height: 2),
-                      Text(
-                        'Tractors, Harvesters, Implements',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const Icon(
-                  CupertinoIcons.chevron_forward,
-                  size: 16,
-                  color: CupertinoColors.systemGrey3,
-                ),
-              ],
-            ),
-          ),
-
-          // 2. Buy & Sell Crops Option
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              // Navigate to Sell Crop Screen
-            },
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryLight,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    CupertinoIcons.cart_fill,
-                    color: AppColors.primary,
-                    size: 22,
-                  ),
-                ),
-                const SizedBox(width: 14),
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Sell Crops / Produce',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      SizedBox(height: 2),
-                      Text(
-                        'Wheat, Rice, Potatoes, Vegetables',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const Icon(
-                  CupertinoIcons.chevron_forward,
-                  size: 16,
-                  color: CupertinoColors.systemGrey3,
-                ),
-              ],
-            ),
-          ),
-
-          // 3. Ask Expert Advice Option
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              // Navigate to Ask Expert Screen
-            },
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryLight,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    CupertinoIcons.question_circle_fill,
-                    color: AppColors.primary,
-                    size: 22,
-                  ),
-                ),
-                const SizedBox(width: 14),
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Ask Expert Question',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      SizedBox(height: 2),
-                      Text(
-                        'Post leaf photo or query to agronomists',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const Icon(
-                  CupertinoIcons.chevron_forward,
-                  size: 16,
-                  color: CupertinoColors.systemGrey3,
-                ),
-              ],
-            ),
-          ),
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          isDefaultAction: true,
-          onPressed: () => Navigator.pop(context),
-          child: const Text(
-            'Cancel',
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              color: CupertinoColors.destructiveRed,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {

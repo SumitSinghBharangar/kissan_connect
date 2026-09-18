@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../core/models/equipment_model.dart';
 
@@ -57,6 +58,7 @@ class EquipmentProvider extends ChangeNotifier {
   }
 
   Future<void> fetchEquipments() async {
+    final currentUid = FirebaseAuth.instance.currentUser?.uid;
     _isLoading = true;
     notifyListeners();
 
@@ -64,6 +66,7 @@ class EquipmentProvider extends ChangeNotifier {
       final snapshot = await _firestore
           .collection('equipments')
           .where('isAvailable', isEqualTo: true)
+          .where('ownerId', isNotEqualTo: currentUid)
           .get();
 
       _allEquipments = snapshot.docs

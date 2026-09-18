@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
 import 'package:kissan_connect/features/mandi/screens/mandi_screen.dart';
+import 'package:kissan_connect/features/notifications/screens/notification_screen.dart';
 import 'package:kissan_connect/features/profile/provider/user_provider.dart';
 import 'package:kissan_connect/features/rental/screen/rental_vehicle_screen.dart';
 import 'package:kissan_connect/features/weather/screen/weather_screen.dart';
@@ -29,7 +30,6 @@ class HomeScreen extends StatelessWidget {
               _buildHeader(context),
               const SizedBox(height: 16),
 
-              
               const HeroBannerCarousel(),
               const SizedBox(height: 22),
 
@@ -149,7 +149,12 @@ class HomeScreen extends StatelessWidget {
               Icons.notifications_none_rounded,
               color: AppColors.textPrimary,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(builder: (_) => NotificationsScreen()),
+              );
+            },
           ),
         ),
       ],

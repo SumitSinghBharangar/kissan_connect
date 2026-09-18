@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
 import 'package:kissan_connect/features/auth/screens/login_screen.dart';
+import 'package:kissan_connect/features/notifications/screens/notification_screen.dart';
 import 'package:kissan_connect/features/profile/provider/user_provider.dart';
 import 'package:kissan_connect/features/profile/screens/edit_profile_screen.dart';
 import 'package:kissan_connect/features/rental/screen/my_bookings_screen.dart';
@@ -200,7 +201,14 @@ class ProfileScreen extends StatelessWidget {
                 icon: Icons.notifications_none_rounded,
                 title: 'Notifications',
                 subtitle: 'Rental alerts and Mandi updates',
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NotificationsScreen(),
+                    ),
+                  );
+                },
               ),
               _buildMenuItem(
                 icon: Icons.translate_rounded,

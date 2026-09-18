@@ -6,6 +6,7 @@ import 'package:kissan_connect/core/models/booking_model.dart';
 import 'package:kissan_connect/core/models/equipment_model.dart';
 import 'package:kissan_connect/core/models/notification_model.dart';
 import 'package:kissan_connect/core/services/notification_service.dart';
+import 'package:kissan_connect/features/chat/screen/chat_screen.dart';
 import 'package:kissan_connect/features/profile/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +22,80 @@ class EquipmentDetailScreen extends StatelessWidget {
       backgroundColor: Colors.transparent,
       builder: (_) => BookingModalSheet(equipment: equipment),
     );
+  }
+
+  Future<void> _openChat(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please log in to chat with the owner')),
+      );
+      return;
+    }
+
+    final currentUid = user.uid;
+    final ownerUid = equipment.ownerId;
+
+    if (currentUid == ownerUid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('This is your own equipment listing!')),
+      );
+      return;
+    }
+
+    try {
+      // 1. Fallback to existing equipment/provider data if network document fetch fails
+      String ownerName = 'Equipment Owner';
+
+      try {
+        final ownerDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(ownerUid)
+            .get(const GetOptions(source: Source.serverAndCache));
+
+        if (ownerDoc.exists && ownerDoc.data() != null) {
+          ownerName = ownerDoc.data()!['name'] ?? ownerName;
+        }
+      } catch (_) {
+        // Use fallback owner name without crashing if user profile doc is slow or offline
+      }
+
+      final currentUserName =
+          context.read<UserProvider>().currentUser?.name ?? 'Farmer';
+
+      // 2. Deterministic room ID
+      final sortedIds = [currentUid, ownerUid]..sort();
+      final roomId = '${sortedIds[0]}_${sortedIds[1]}';
+
+      final roomRef = FirebaseFirestore.instance
+          .collection('chats')
+          .doc(roomId);
+
+      // 3. Use SetOptions(merge: true) instead of get() to avoid blocking if offline
+      await roomRef.set({
+        'participants': [currentUid, ownerUid],
+        'participantNames': {currentUid: currentUserName, ownerUid: ownerName},
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      if (!context.mounted) return;
+
+      // 4. Navigate
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) =>
+              ConversationScreen(chatRoomId: roomId, peerName: ownerName),
+        ),
+      );
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Could not open chat: $e')));
+      }
+    }
   }
 
   @override
@@ -274,7 +349,20 @@ class EquipmentDetailScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(width: 20),
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.primaryLight,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.chat_outlined,
+                    color: AppColors.primary,
+                  ),
+                  onPressed: () => _openChat(context),
+                ),
+              ),
+              const SizedBox(width: 12),
               Expanded(
                 child: SizedBox(
                   height: 48,
