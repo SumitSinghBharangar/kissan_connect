@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
 import 'package:kissan_connect/core/models/booking_model.dart';
 import 'package:kissan_connect/core/models/equipment_model.dart';
+import 'package:kissan_connect/core/models/notification_model.dart';
+import 'package:kissan_connect/core/services/notification_service.dart';
 import 'package:kissan_connect/features/profile/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -227,8 +229,8 @@ class EquipmentDetailScreen extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 100), 
-                ],  
+                  const SizedBox(height: 100),
+                ],
               ),
             ),
           ),
@@ -514,6 +516,14 @@ class _BookingModalSheetState extends State<BookingModalSheet> {
       );
 
       await docRef.set(booking.toMap());
+      await NotificationService.sendNotification(
+        recipientId: widget.equipment.ownerId,
+        title: 'New Rental Request!',
+        body:
+            '${currentUserData?.name ?? "A farmer"} has requested to rent ${widget.equipment.name}.',
+        type: NotificationType.bookingRequest,
+        relatedDocId: docRef.id,
+      );
 
       if (mounted) {
         Navigator.pop(context);

@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
 import 'package:kissan_connect/core/models/booking_model.dart';
+import 'package:kissan_connect/core/models/notification_model.dart';
+import 'package:kissan_connect/core/services/notification_service.dart';
 import 'package:kissan_connect/core/utils/contact_helper.dart';
 
 class MyBookingsScreen extends StatelessWidget {
@@ -280,6 +282,19 @@ class _BookingCard extends StatelessWidget {
     try {
       await FirebaseFirestore.instance.collection('bookings').doc(docId).update(
         {'status': newStatus.name, 'updatedAt': FieldValue.serverTimestamp()},
+      );
+      await NotificationService.sendNotification(
+        recipientId: booking.renterId,
+        title: newStatus == BookingStatus.confirmed
+            ? 'Booking Confirmed! 🚜'
+            : 'Booking Declined',
+        body: newStatus == BookingStatus.confirmed
+            ? 'Your request for ${booking.equipmentName} was accepted by the owner.'
+            : 'Your request for ${booking.equipmentName} could not be accepted.',
+        type: newStatus == BookingStatus.confirmed
+            ? NotificationType.bookingAccepted
+            : NotificationType.bookingRejected,
+        relatedDocId: docId,
       );
     } catch (e) {
       if (context.mounted) {
