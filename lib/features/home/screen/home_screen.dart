@@ -6,6 +6,7 @@ import 'package:kissan_connect/features/mandi/screens/mandi_screen.dart';
 import 'package:kissan_connect/features/notifications/screens/notification_screen.dart';
 import 'package:kissan_connect/features/profile/provider/user_provider.dart';
 import 'package:kissan_connect/features/rental/screen/rental_vehicle_screen.dart';
+import 'package:kissan_connect/features/schemes/screens/scheme_screen.dart';
 import 'package:kissan_connect/features/weather/screen/weather_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -194,9 +195,7 @@ class HomeScreen extends StatelessWidget {
         'title': 'Schemes',
         'icon': Icons.assignment_outlined,
         'color': const Color(0xFF00897B),
-        'screen': const Scaffold(
-          body: Center(child: Text('Government Schemes Screen')),
-        ),
+        'screen': const Scaffold(body: SchemesScreen()),
       },
       {
         'title': 'Crop Info',
