@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
 import 'package:kissan_connect/core/localization/language_dialog.dart';
 import 'package:kissan_connect/core/localization/locale_provider.dart';
+import 'package:kissan_connect/core/services/fcm_service.dart';
 import 'package:kissan_connect/features/auth/screens/login_screen.dart';
 import 'package:kissan_connect/features/notifications/screens/notification_screen.dart';
 import 'package:kissan_connect/features/profile/provider/user_provider.dart';
@@ -358,9 +359,8 @@ class ProfileScreen extends StatelessWidget {
                                       ),
                                     ),
                                     onPressed: () async {
-                                      Navigator.pop(
-                                        bottomSheetContext,
-                                      ); // Close modal
+                                      Navigator.pop(bottomSheetContext);
+                                      await FCMService.clearUserFCMToken();
                                       await userProvider.signOut();
                                       if (context.mounted) {
                                         Navigator.pushAndRemoveUntil(

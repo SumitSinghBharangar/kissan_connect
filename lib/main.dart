@@ -2,10 +2,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
 import 'package:kissan_connect/core/localization/locale_provider.dart';
+import 'package:kissan_connect/core/services/fcm_service.dart';
 import 'package:kissan_connect/features/auth/provider/auth_provider.dart';
 import 'package:kissan_connect/features/auth/screens/auth_gate.dart';
 import 'package:kissan_connect/features/auth/screens/login_screen.dart';
 import 'package:kissan_connect/features/auth/screens/otp_verification_screen.dart';
+import 'package:kissan_connect/features/chat/screen/chat_screen.dart';
 import 'package:kissan_connect/features/profile/provider/user_provider.dart';
 import 'package:kissan_connect/features/rental/provider/equipment_provider.dart';
 import 'package:kissan_connect/firebase_options.dart';
@@ -16,6 +18,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FCMService.initialize();
 
   runApp(const MyApp());
 }
@@ -35,6 +38,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Kissan Connect',
+        navigatorKey: FCMService.navigatorKey,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
@@ -61,6 +65,18 @@ class MyApp extends StatelessWidget {
         // Auth Wrapper: automatically check if user is already logged in
         // home: const Scaffold(body: Center(child: Text("Kissan Connect"))),
         home: AuthGate(),
+        onGenerateRoute: (settings) {
+          if (settings.name == '/conversation') {
+            final args = settings.arguments as Map<String, dynamic>;
+            return MaterialPageRoute(
+              builder: (_) => ConversationScreen(
+                chatRoomId: args['chatRoomId'],
+                peerName: args['peerName'],
+              ),
+            );
+          }
+          return null;
+        },
       ),
     );
   }

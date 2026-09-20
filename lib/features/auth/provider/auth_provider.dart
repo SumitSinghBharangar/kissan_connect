@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:kissan_connect/core/services/fcm_service.dart';
 
 class AuthProvider extends ChangeNotifier {
   // Add these two instance declarations:
@@ -80,7 +81,11 @@ class AuthProvider extends ChangeNotifier {
         smsCode: otp,
       );
 
-      UserCredential userCredential = await _auth.signInWithCredential(credential);
+      UserCredential userCredential = await _auth.signInWithCredential(
+        credential,
+      );
+
+      await FCMService.saveUserFCMToken();
 
       if (userCredential.user != null) {
         // Create user document in Firestore if it doesn't exist
