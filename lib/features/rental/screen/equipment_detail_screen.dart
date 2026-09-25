@@ -5,7 +5,9 @@ import 'package:kissan_connect/core/constants/app_colors.dart';
 import 'package:kissan_connect/core/models/booking_model.dart';
 import 'package:kissan_connect/core/models/equipment_model.dart';
 import 'package:kissan_connect/core/models/notification_model.dart';
+import 'package:kissan_connect/core/services/fcm_sender_service.dart';
 import 'package:kissan_connect/core/services/notification_service.dart';
+
 import 'package:kissan_connect/features/chat/screen/chat_screen.dart';
 import 'package:kissan_connect/features/profile/provider/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -611,6 +613,13 @@ class _BookingModalSheetState extends State<BookingModalSheet> {
             '${currentUserData?.name ?? "A farmer"} has requested to rent ${widget.equipment.name}.',
         type: NotificationType.bookingRequest,
         relatedDocId: docRef.id,
+      );
+      await FCMSenderService.sendPushNotification(
+        recipientUserId: widget.equipment.ownerId,
+        title: '🚜 New Equipment Booking!',
+        body:
+            '${"A farmer"} has requested to rent ${widget.equipment.name}.',
+        route: 'bookings',
       );
 
       if (mounted) {

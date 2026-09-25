@@ -4,6 +4,7 @@ enum NotificationType {
   bookingRequest,
   bookingAccepted,
   bookingRejected,
+  chatMessage,
   general,
 }
 

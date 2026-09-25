@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:kissan_connect/core/services/fcm_sender_service.dart';
 import '../models/notification_model.dart';
 
 class NotificationService {
@@ -25,6 +26,19 @@ class NotificationService {
     );
 
     await docRef.set(notif.toMap());
+
+    final String route =
+        (type == NotificationType.bookingRequest ||
+            type == NotificationType.bookingAccepted)
+        ? 'bookings'
+        : 'notifications';
+
+    await FCMSenderService.sendPushNotification(
+      recipientUserId: recipientId,
+      title: title,
+      body: body,
+      route: route,
+    );
   }
 
   // Mark all notifications for a user as read

@@ -52,6 +52,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
     });
 
     await batch.commit();
+    
+    
   }
 
   @override
