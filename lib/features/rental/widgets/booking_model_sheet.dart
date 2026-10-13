@@ -63,6 +63,7 @@ class _BookingModalSheetState extends State<BookingModalSheet> {
     setState(() => _isBooking = true);
 
     try {
+      
       final ownerDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(widget.equipment.ownerId)
@@ -77,7 +78,9 @@ class _BookingModalSheetState extends State<BookingModalSheet> {
         ownerPhone = data['phone'] ?? '';
       }
 
+      // 2. Prepare Booking Record in Firestore
       final docRef = FirebaseFirestore.instance.collection('bookings').doc();
+      final renterName = currentUserData?.name ?? 'Farmer User';
 
       final booking = BookingModel(
         id: docRef.id,
@@ -88,7 +91,7 @@ class _BookingModalSheetState extends State<BookingModalSheet> {
         ownerName: ownerName,
         ownerPhone: ownerPhone,
         renterId: user.uid,
-        renterName: currentUserData?.name ?? 'Farmer User',
+        renterName: renterName,
         renterPhone: user.phoneNumber ?? (currentUserData?.phone ?? ''),
         bookingDate: _selectedDate,
         totalHours: _selectedHours,
@@ -99,19 +102,14 @@ class _BookingModalSheetState extends State<BookingModalSheet> {
       );
 
       await docRef.set(booking.toMap());
+
+      // 3. Dispatch Notification (In-App Firestore record + FCM v1 Push alert)
       await NotificationService.sendNotification(
         recipientId: widget.equipment.ownerId,
-        title: 'New Rental Request!',
-        body:
-            '${currentUserData?.name ?? "A farmer"} has requested to rent ${widget.equipment.name}.',
+        title: '🚜 New Equipment Booking!',
+        body: '$renterName has requested to rent ${widget.equipment.name}.',
         type: NotificationType.bookingRequest,
         relatedDocId: docRef.id,
-      );
-      await FCMSenderService.sendPushNotification(
-        recipientUserId: widget.equipment.ownerId,
-        title: '🚜 New Equipment Booking!',
-        body: '${"A farmer"} has requested to rent ${widget.equipment.name}.',
-        route: 'bookings',
       );
 
       if (mounted) {
@@ -125,7 +123,9 @@ class _BookingModalSheetState extends State<BookingModalSheet> {
         ).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     } finally {
-      if (mounted) setState(() => _isBooking = false);
+      if (mounted) {
+        setState(() => _isBooking = false);
+      }
     }
   }
 
