@@ -89,8 +89,11 @@ class EquipmentDetailScreen extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) =>
-              ConversationScreen(chatRoomId: roomId, peerName: ownerName),
+          builder: (_) => ConversationScreen(
+            chatRoomId: roomId,
+            peerName: ownerName,
+            recipientUid: ownerUid,
+          ),
         ),
       );
     } catch (e) {
@@ -406,7 +409,7 @@ class EquipmentDetailScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(6),
                       border: Border.all(
                         color: Colors.orange.shade300,
-                        width: 1.5, 
+                        width: 1.5,
                       ),
                       boxShadow: [
                         BoxShadow(

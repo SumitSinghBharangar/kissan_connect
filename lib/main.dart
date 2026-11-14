@@ -72,6 +72,7 @@ class MyApp extends StatelessWidget {
               builder: (_) => ConversationScreen(
                 chatRoomId: args['chatRoomId'],
                 peerName: args['peerName'],
+                recipientUid: args['ownerUid'],
               ),
             );
           }

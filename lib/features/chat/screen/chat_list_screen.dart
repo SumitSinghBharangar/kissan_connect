@@ -85,6 +85,7 @@ class ChatListScreen extends StatelessWidget {
                 (id) => id != currentUid,
                 orElse: () => '',
               );
+
               final peerName = room.participantNames[peerId] ?? 'Farmer';
 
               return Container(
@@ -130,6 +131,7 @@ class ChatListScreen extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (_) => ConversationScreen(
                           chatRoomId: room.id,
+                          recipientUid: peerId,
                           peerName: peerName,
                         ),
                       ),

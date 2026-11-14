@@ -37,7 +37,7 @@ class NotificationsScreen extends StatelessWidget {
           ),
         ),
         actions: [
-          TextButton(
+          TextButton( 
             onPressed: () => NotificationService.markAllAsRead(uid),
             child: const Text(
               'Read All',
@@ -82,7 +82,7 @@ class NotificationsScreen extends StatelessWidget {
                 ],
               ),
             );
-          }
+          } 
 
           return ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),

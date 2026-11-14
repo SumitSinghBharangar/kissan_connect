@@ -45,30 +45,25 @@ class ChatMessageModel {
   final String id;
   final String senderId;
   final String text;
-  final DateTime timestamp;
+  final bool isRead;
+  final DateTime? createdAt;
 
   ChatMessageModel({
     required this.id,
     required this.senderId,
     required this.text,
-    required this.timestamp,
+    this.isRead = false,
+    this.createdAt,
   });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'senderId': senderId,
-      'text': text,
-      'timestamp': Timestamp.fromDate(timestamp),
-    };
-  }
 
   factory ChatMessageModel.fromMap(Map<String, dynamic> map, String docId) {
     return ChatMessageModel(
       id: docId,
       senderId: map['senderId'] ?? '',
       text: map['text'] ?? '',
-      timestamp: map['timestamp'] != null
-          ? (map['timestamp'] as Timestamp).toDate()
+      isRead: map['isRead'] ?? false,
+      createdAt: map['createdAt'] is Timestamp
+          ? (map['createdAt'] as Timestamp).toDate()
           : DateTime.now(),
     );
   }
