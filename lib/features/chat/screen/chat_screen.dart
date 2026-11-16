@@ -223,6 +223,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     ),
                   );
                 }
+                if (docs.isNotEmpty) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _markIncomingMessagesAsRead(docs);
+                  });
+                }
 
                 return ListView.builder(
                   reverse: true,
