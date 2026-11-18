@@ -68,34 +68,54 @@ class FCMService {
         ?.createNotificationChannel(channel);
 
     // 2. Foreground notifications (FCM doesn't auto-display banners while app is open)
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       final notification = message.notification;
-      final android = message.notification?.android;
+      if (notification == null) return;
 
-      if (notification != null && android != null) {
-        _localNotifications.show(
-          id: notification.hashCode,
-          title: notification.title,
-          body: notification.body,
-          notificationDetails: NotificationDetails(
-            android: AndroidNotificationDetails(
-              channel.id,
-              channel.name,
-              channelDescription: channel.description,
-              icon: '@mipmap/ic_launcher',
-              importance: Importance.max,
-              priority: Priority.high,
-            ),
-          ),
-          payload: message.data['route'] ?? '',
-        );
+      final String route = message.data['route'] ?? '';
+
+      // Suppress foreground popup if user is already viewing this exact chat room
+      if (route.startsWith('chat:')) {
+        final incomingChatId = route.replaceFirst('chat:', '').split('|').first;
+        final currentUid = FirebaseAuth.instance.currentUser?.uid;
+        if (currentUid != null) {
+          final userDoc = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(currentUid)
+              .get();
+          if (userDoc.data()?['activeChatId'] == incomingChatId) {
+            return;
+          }
+        }
       }
+
+      _localNotifications.show(
+        id: notification.hashCode,
+        title: notification.title,
+        body: notification.body,
+        notificationDetails: NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel.id,
+            channel.name,
+            channelDescription: channel.description,
+            icon: '@mipmap/ic_launcher',
+            importance: Importance.max,
+            priority: Priority.high,
+          ),
+          iOS: const DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
+        ),
+        payload: route,
+      );
     });
 
     // 3. User taps notification when app was opened from background
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       final route = message.data['route'];
-      if (route != null) {
+      if (route != null && route.isNotEmpty) {
         _routeByPayload(route);
       }
     });
@@ -104,8 +124,7 @@ class FCMService {
     RemoteMessage? initialMessage = await _fcm.getInitialMessage();
     if (initialMessage != null) {
       final route = initialMessage.data['route'];
-      if (route != null) {
-        // Slight delay to allow navigator widget to mount
+      if (route != null && route.isNotEmpty) {
         Future.delayed(const Duration(milliseconds: 600), () {
           _routeByPayload(route);
         });
@@ -136,33 +155,80 @@ class FCMService {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(current.uid)
-            .update({'fcmToken': newToken});
+            .set({'fcmToken': newToken}, SetOptions(merge: true));
       }
     });
   }
 
-  // Clear token on signout
+  // Clear token and activeChatId on signout
   static Future<void> clearUserFCMToken() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).update(
-        {'fcmToken': FieldValue.delete()},
-      );
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+        'fcmToken': FieldValue.delete(),
+        'activeChatId': FieldValue.delete(),
+      }, SetOptions(merge: true));
     }
   }
 
+  // Unified route dispatcher for all notification types
   static void _routeByPayload(String route) {
+    final navigator = navigatorKey.currentState;
+    if (navigator == null || route.isEmpty) return;
+
+    // 1. Chat Messages -> Format: 'chat:chatRoomId|senderUid|senderName' (or 'chat:chatRoomId|senderName')
     if (route.startsWith('chat:')) {
       final parts = route.replaceFirst('chat:', '').split('|');
-      navigatorKey.currentState?.pushNamed(
+      final String chatRoomId = parts[0];
+      final String recipientUid = parts.length >= 3 ? parts[1] : '';
+      final String peerName = parts.length >= 3
+          ? parts[2]
+          : (parts.length == 2 ? parts[1] : 'Farmer');
+
+      navigator.pushNamed(
         '/conversation',
         arguments: {
-          'chatRoomId': parts[0],
-          'peerName': parts.length > 1 ? parts[1] : 'Farmer',
+          'chatRoomId': chatRoomId,
+          'recipientUid': recipientUid,
+          'peerName': peerName,
         },
       );
-    } else if (route == 'bookings') {
-      navigatorKey.currentState?.pushNamed('/my_bookings');
+      return;
     }
+
+    // 2. Incoming Rental Request (Owner View) -> Format: 'booking_request:bookingId'
+    if (route.startsWith('booking_request:')) {
+      final bookingId = route.replaceFirst('booking_request:', '');
+      navigator.pushNamed(
+        '/my_bookings',
+        arguments: {
+          'initialTab': 1, // Owner incoming requests tab
+          'bookingId': bookingId,
+        },
+      );
+      return;
+    }
+
+    // 3. Booking Approved / Confirmed (Renter View) -> Format: 'booking_confirmed:bookingId'
+    if (route.startsWith('booking_confirmed:')) {
+      final bookingId = route.replaceFirst('booking_confirmed:', '');
+      navigator.pushNamed(
+        '/my_bookings',
+        arguments: {
+          'initialTab': 0, // Renter bookings tab
+          'bookingId': bookingId,
+        },
+      );
+      return;
+    }
+
+    // 4. Booking Rejected / Cancelled -> Format: 'booking_rejected:bookingId'
+    if (route.startsWith('booking_rejected:') || route == 'bookings') {
+      navigator.pushNamed('/my_bookings');
+      return;
+    }
+
+    // 5. Fallback -> In-App Notifications Screen
+    navigator.pushNamed('/notifications');
   }
 }

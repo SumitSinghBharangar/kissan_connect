@@ -25,9 +25,36 @@ class ConversationScreen extends StatefulWidget {
   State<ConversationScreen> createState() => _ConversationScreenState();
 }
 
-class _ConversationScreenState extends State<ConversationScreen> {
+class _ConversationScreenState extends State<ConversationScreen>
+    with WidgetsBindingObserver {
   final TextEditingController _messageController = TextEditingController();
   final String _currentUid = FirebaseAuth.instance.currentUser?.uid ?? '';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _setActiveChatStatus(widget.chatRoomId);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _setActiveChatStatus(widget.chatRoomId);
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) {
+      _setActiveChatStatus(null);
+    }
+  }
+
+  Future<void> _setActiveChatStatus(String? chatRoomId) async {
+    if (_currentUid.isEmpty) return;
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_currentUid)
+        .update({'activeChatId': chatRoomId});
+  }
 
   Future<void> _sendMessage() async {
     final text = _messageController.text.trim();
@@ -68,13 +95,22 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
     await batch.commit();
 
+    final recipientDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.recipientUid)
+        .get();
+
+    final String? recipientActiveChat = recipientDoc.data()?['activeChatId'];
+
     // 3. Trigger push notification to the recipient
-    await FCMSenderService.sendPushNotification(
-      recipientUserId: widget.recipientUid,
-      title: '💬 $senderName',
-      body: text,
-      route: 'chat:${widget.chatRoomId}|$senderName',
-    );
+
+    if (recipientActiveChat != widget.chatRoomId)
+      await FCMSenderService.sendPushNotification(
+        recipientUserId: widget.recipientUid,
+        title: '💬 $senderName',
+        body: text,
+        route: 'chat:${widget.chatRoomId}|$_currentUid|$senderName',
+      );
   }
 
   String _formatMessageTime(DateTime? dateTime) {
@@ -166,6 +202,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
   @override
   void dispose() {
     _messageController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    _setActiveChatStatus(null);
+
     super.dispose();
   }
 
