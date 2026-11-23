@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'app_translation.dart';
 
 class LocaleProvider extends ChangeNotifier {
@@ -28,8 +28,18 @@ class LocaleProvider extends ChangeNotifier {
     await prefs.setString('selected_locale', langCode);
   }
 
+  /// Quick one-tap switch between 'en' and 'hi'
+  Future<void> toggleLocale() async {
+    await setLocale(_locale == 'en' ? 'hi' : 'en');
+  }
+
   // Translation helper function
   String tr(String key) {
     return AppTranslations.get(key, _locale);
   }
+}
+
+// Clean BuildContext extension for every screen and widget
+extension LocalizationExtension on BuildContext {
+  String tr(String key) => watch<LocaleProvider>().tr(key);
 }

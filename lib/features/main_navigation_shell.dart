@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:kissan_connect/core/localization/locale_provider.dart';
 import 'package:kissan_connect/features/chat/screen/chat_list_screen.dart';
 import 'package:kissan_connect/features/home/screen/home_screen.dart';
 import 'package:kissan_connect/features/profile/screens/profile_screen.dart';
@@ -79,7 +80,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
                       index: 0,
                       icon: Icons.home_outlined,
                       activeIcon: Icons.home_rounded,
-                      label: 'Home',
+                      label: context.tr('home'),
                     ),
                     _buildNavButton(
                       index: 1,

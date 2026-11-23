@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
 import 'package:kissan_connect/core/localization/locale_provider.dart';
+
 import 'package:kissan_connect/core/services/fcm_service.dart';
 import 'package:kissan_connect/features/auth/provider/auth_provider.dart';
 import 'package:kissan_connect/features/auth/screens/auth_gate.dart';
@@ -31,52 +32,56 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        // ChangeNotifierProvider(create: (_) => RentalProvider()),
         ChangeNotifierProvider(create: (_) => EquipmentProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
       ],
-      child: MaterialApp(
-        title: 'Kissan Connect',
-        navigatorKey: FCMService.navigatorKey,
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: AppColors.primary,
-            primary: AppColors.primary,
-            background: AppColors.background,
-          ),
-          // textTheme: GoogleFonts.plusJakartaSansTextTheme(
-          //   Theme.of(context).textTheme,
-          // ),
-          scaffoldBackgroundColor: AppColors.background,
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            iconTheme: IconThemeData(color: AppColors.textPrimary),
-            titleTextStyle: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        // Auth Wrapper: automatically check if user is already logged in
-        // home: const Scaffold(body: Center(child: Text("Kissan Connect"))),
-        home: AuthGate(),
-        onGenerateRoute: (settings) {
-          if (settings.name == '/conversation') {
-            final args = settings.arguments as Map<String, dynamic>;
-            return MaterialPageRoute(
-              builder: (_) => ConversationScreen(
-                chatRoomId: args['chatRoomId'],
-                peerName: args['peerName'],
-                recipientUid: args['ownerUid'],
+      // Consumer rebuilds MaterialApp whenever locale changes
+      child: Consumer<LocaleProvider>(
+        builder: (context, localeProvider, _) {
+          return MaterialApp(
+            title: 'Kissan Connect',
+            navigatorKey: FCMService.navigatorKey,
+            locale: Locale(
+              localeProvider.locale,
+            ), // <-- Updates native Flutter widgets too
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              useMaterial3: true,
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: AppColors.primary,
+                primary: AppColors.primary,
+                surface: AppColors.background,
               ),
-            );
-          }
-          return null;
+              scaffoldBackgroundColor: AppColors.background,
+              appBarTheme: const AppBarTheme(
+                backgroundColor: Colors.white,
+                elevation: 0,
+                iconTheme: IconThemeData(color: AppColors.textPrimary),
+                titleTextStyle: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            home: const AuthGate(),
+            onGenerateRoute: (settings) {
+              if (settings.name == '/conversation') {
+                final args = settings.arguments as Map<String, dynamic>;
+                return MaterialPageRoute(
+                  builder: (_) => ConversationScreen(
+                    chatRoomId: args['chatRoomId'],
+                    peerName: args['peerName'] ?? 'Farmer',
+                    // Supports both 'recipientUid' (from FCM) and 'ownerUid'
+                    recipientUid:
+                        args['recipientUid'] ?? args['ownerUid'] ?? '',
+                  ),
+                );
+              }
+              return null;
+            },
+          );
         },
       ),
     );
