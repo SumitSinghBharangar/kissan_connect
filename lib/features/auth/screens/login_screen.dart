@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:kissan_connect/core/localization/locale_provider.dart';
 import 'package:kissan_connect/features/auth/provider/auth_provider.dart';
 import 'package:kissan_connect/features/auth/screens/otp_verification_screen.dart';
 import 'package:provider/provider.dart';
@@ -20,9 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final phone = _phoneController.text.trim();
     if (phone.length != 10) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a valid 10-digit mobile number'),
-        ),
+        SnackBar(content: Text(context.tr('valid_mobile_number'))),
       );
       return;
     }
@@ -83,13 +82,13 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Welcome Farmer 👋',
+                  Text(
+                    context.tr('welcome_farmer'),
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    'Enter your mobile number to continue',
+                  Text(
+                    context.tr('enter_mobile_number'),
                     style: TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 14,
@@ -135,9 +134,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             controller: _phoneController,
                             keyboardType: TextInputType.phone,
                             maxLength: 10,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               counterText: '',
-                              hintText: 'Enter mobile number',
+                              hintText: context.tr('enter_mobile'),
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 12,
@@ -171,8 +170,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                       label: isLoading
                           ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text(
-                              'Send OTP',
+                          : Text(
+                              context.tr('send_otp'),
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
@@ -182,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
@@ -192,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       SizedBox(width: 6),
                       Text(
-                        'Your data is safe and secure with us',
+                        context.tr('data_safe_message'),
                         style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 12,
@@ -204,22 +203,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   Center(
                     child: Text.rich(
                       TextSpan(
-                        text: 'By continuing, you agree to our\n',
+                        text: context.tr('agree_message') + '\n',
                         style: const TextStyle(
                           fontSize: 12,
                           color: AppColors.textSecondary,
                         ),
                         children: [
                           TextSpan(
-                            text: 'Terms & Conditions',
+                            text: context.tr('terms_conditions'),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: AppColors.primary,
                             ),
                           ),
-                          const TextSpan(text: ' and '),
+                          TextSpan(text: ' ' + context.tr('and') + ' '),
                           TextSpan(
-                            text: 'Privacy Policy',
+                            text: context.tr('privacy_policy'),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: AppColors.primary,

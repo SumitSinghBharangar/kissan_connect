@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
+import 'package:kissan_connect/core/localization/locale_provider.dart';
 import 'package:kissan_connect/features/auth/provider/auth_provider.dart';
 import 'package:kissan_connect/features/main_navigation_shell.dart';
 import 'package:kissan_connect/features/profile/provider/user_provider.dart';
@@ -24,9 +25,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   void _verifyOtp() async {
     final otp = _otpController.text.trim();
     if (otp.length != 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid 6-digit OTP')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.tr('valid_otp'))));
       return;
     }
 
@@ -130,13 +131,13 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'Verify Mobile Number',
+            Text(
+              context.tr('verify_mobile_number'),
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              'We have sent a 6-digit OTP to',
+              context.tr('otp_sent_message'),
               style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
             ),
             const SizedBox(height: 4),
@@ -165,7 +166,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 const Icon(Icons.access_time, size: 16, color: Colors.grey),
                 const SizedBox(width: 4),
                 Text(
-                  'OTP will expire in 00:${authProvider.timerSeconds.toString().padLeft(2, '0')}',
+                  context.tr('otp_expire_message') +
+                      ':${authProvider.timerSeconds.toString().padLeft(2, '0')}',
                   style: const TextStyle(color: Colors.grey, fontSize: 13),
                 ),
               ],
@@ -190,8 +192,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 ),
                 label: authProvider.isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text(
-                        'Verify OTP',
+                    : Text(
+                        context.tr('verify_otp'),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -201,12 +203,15 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            const Row(
+            Row(
               children: [
                 Expanded(child: Divider()),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 12),
-                  child: Text('or', style: TextStyle(color: Colors.grey)),
+                  child: Text(
+                    context.tr('or'),
+                    style: TextStyle(color: Colors.grey),
+                  ),
                 ),
                 Expanded(child: Divider()),
               ],
@@ -235,8 +240,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       )
                     : null,
                 icon: const Icon(Icons.refresh, color: AppColors.primary),
-                label: const Text(
-                  'Resend OTP',
+                label: Text(
+                  context.tr('resend_otp'),
                   style: TextStyle(
                     color: AppColors.primary,
                     fontWeight: FontWeight.bold,
@@ -253,8 +258,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 size: 16,
                 color: AppColors.primary,
               ),
-              label: const Text(
-                'Change Mobile Number',
+              label: Text(
+                context.tr('change_mobile_number'),
                 style: TextStyle(
                   color: AppColors.primary,
                   fontWeight: FontWeight.w600,
