@@ -20,7 +20,6 @@ class MainNavigationShell extends StatefulWidget {
 class _MainNavigationShellState extends State<MainNavigationShell> {
   int _currentIndex = 0;
 
- 
   final List<Widget> _views = [
     HomeScreen(), // Rent / Buy & Sell Marketplace
 
@@ -86,7 +85,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
                       index: 1,
                       icon: Icons.storefront_outlined,
                       activeIcon: Icons.storefront_rounded,
-                      label: 'Market',
+                      label: context.tr('market'),
                     ),
                     // Center Floating Add (+) Button
                     _buildCenterAddButton(context),
@@ -94,13 +93,13 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
                       index: 3,
                       icon: Icons.chat_bubble_outline_rounded,
                       activeIcon: Icons.chat_bubble_rounded,
-                      label: 'Chat',
+                      label: context.tr('chats'),
                     ),
                     _buildNavButton(
                       index: 4,
                       icon: Icons.person_outline_rounded,
                       activeIcon: Icons.person_rounded,
-                      label: 'Profile',
+                      label: context.tr('profile'),
                     ),
                   ],
                 ),
