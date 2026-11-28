@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/core/constants/app_colors.dart';
+import 'package:kissan_connect/core/localization/locale_provider.dart';
 import 'package:kissan_connect/features/mandi/screens/mandi_screen.dart';
 import 'package:kissan_connect/features/notifications/screens/notification_screen.dart';
 import 'package:kissan_connect/features/profile/provider/user_provider.dart';
@@ -34,8 +35,8 @@ class HomeScreen extends StatelessWidget {
               const HeroBannerCarousel(),
               const SizedBox(height: 22),
 
-              const Text(
-                'Explore Services',
+              Text(
+                context.tr('explore_services'),
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -49,8 +50,8 @@ class HomeScreen extends StatelessWidget {
               _buildWeatherCard(),
               const SizedBox(height: 22),
 
-              const Text(
-                'Latest Updates',
+              Text(
+                context.tr('latest_updates'),
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -72,7 +73,7 @@ class HomeScreen extends StatelessWidget {
     // Format greeting name (falls back to "Farmer" if empty)
     final String displayName = (user != null && user.name.trim().isNotEmpty)
         ? user.name.trim()
-        : 'Farmer';
+        : context.tr('farmer');
 
     // Format location string: village, district, state
     String locationText = 'Location not set';
@@ -98,7 +99,7 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   Flexible(
                     child: Text(
-                      'Hello, $displayName',
+                      context.tr('hello') + ', $displayName',
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w800,
@@ -166,25 +167,25 @@ class HomeScreen extends StatelessWidget {
     // Service definition mapped with destination routes
     final List<Map<String, dynamic>> services = [
       {
-        'title': 'Rent Vehicles',
+        'title': context.tr('rent_vehicles'),
         'icon': Icons.agriculture_outlined,
         'color': const Color(0xFF4CAF50),
         'screen': const RentVehiclesScreen(),
       },
       {
-        'title': 'Buy & Sell',
+        'title': context.tr('buy_sell'),
         'icon': Icons.shopping_cart_outlined,
         'color': const Color(0xFF8BC34A),
         'screen': MandiScreen(),
       },
       {
-        'title': 'Weather',
+        'title': context.tr('weather'),
         'icon': Icons.wb_sunny_outlined,
         'color': const Color(0xFF03A9F4),
         'screen': WeatherScreen(),
       },
       {
-        'title': 'Expert Advice',
+        'title': context.tr('expert_advice'),
         'icon': Icons.support_agent_outlined,
         'color': const Color(0xFF2E7D32),
         'screen': const Scaffold(
@@ -192,13 +193,13 @@ class HomeScreen extends StatelessWidget {
         ),
       },
       {
-        'title': 'Schemes',
+        'title': context.tr('schemes'),
         'icon': Icons.assignment_outlined,
         'color': const Color(0xFF00897B),
         'screen': const Scaffold(body: SchemesScreen()),
       },
       {
-        'title': 'Crop Info',
+        'title': context.tr('crop_info'),
         'icon': Icons.eco_outlined,
         'color': const Color(0xFF43A047),
         'screen': const Scaffold(

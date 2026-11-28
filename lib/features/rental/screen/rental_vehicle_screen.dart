@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:kissan_connect/features/rental/provider/equipment_provider.dart';
 import 'package:kissan_connect/features/rental/screen/equipment_detail_screen.dart';

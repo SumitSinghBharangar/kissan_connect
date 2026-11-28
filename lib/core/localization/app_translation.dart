@@ -30,6 +30,7 @@ class AppTranslations {
       'explore_services': 'Explore Services',
       'latest_updates': 'Latest Updates',
       'hello': 'Hello',
+      'farmer': 'Farmer',
       'rent_vehicles': 'Rent Vehicles',
       'buy_sell': 'Buy & Sell',
       'weather': 'Weather',
@@ -82,6 +83,8 @@ class AppTranslations {
       'explore_services': 'सेवाएं देखें',
       'latest_updates': 'ताज़ा अपडेट',
       'hello': 'नमस्ते',
+
+      'farmer': 'किसान',
       'rent_vehicles': 'वाहन किराए पर लें',
       'buy_sell': 'खरीदें और बेचें',
       'weather': 'मौसम',
@@ -92,7 +95,7 @@ class AppTranslations {
       'view_forecast': 'मौसम पूर्वानुमान देखें',
       'available_tractors': 'उपलब्ध कृषि यंत्र',
       'mandi_rates': 'मंडी भाव',
-      
+
       'kisan_yojana': 'किसान योजना',
       'book_now': 'मशीन बुक करें',
       'call_owner': 'मालिक को कॉल करें',
